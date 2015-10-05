@@ -204,8 +204,10 @@ def join_group_request(params, tid=None):
     group = get_group(name=params["group-name"], owner_uid=owner_uid)
 
     #TODO: assumes teams of size 1
+    user = api.user.get_user()
+
     if tid is None:
-        tid = api.user.get_user()["tid"]
+        tid = user["tid"]
 
     group_settings = get_group_settings(gid=group["gid"])
 
