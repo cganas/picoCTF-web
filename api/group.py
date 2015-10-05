@@ -195,22 +195,28 @@ def join_group_request(params, tid=None):
             tid: If omitted,the tid will be grabbed from the logged in user.
     """
 
-    owner_uid = api.user.get_user(name=params["group-owner"])["uid"]
-
     validate(join_group_schema, params)
+
+    owner_uid = api.user.get_user(name=params["group-owner"])["uid"]
     if safe_fail(get_group, name=params["group-name"], owner_uid=owner_uid) is None:
         raise WebException("No class exists with that name!")
 
     group = get_group(name=params["group-name"], owner_uid=owner_uid)
 
+    #TODO: assumes teams of size 1
     if tid is None:
-        tid = api.user.get_team()["tid"]
+        tid = api.user.get_user()["tid"]
 
-    if tid in group['members']:
+    group_settings = get_group_settings(gid=group["gid"])
+
+    if not api.user.verify_email_in_whitelist(user["email"], group_settings["email_filter"]):
+        raise WebException("Your email does not belong to the whitelist for that group. You may not join it yourself.")
+
+    if tid in group['members'] or tid in group["teachers"]:
         raise WebException("Your team is already a member of that class!")
 
     join_group(tid, group["gid"])
-    
+
 @log_action
 def leave_group(tid, gid):
     """
