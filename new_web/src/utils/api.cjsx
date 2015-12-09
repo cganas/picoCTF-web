@@ -8,14 +8,14 @@ Api.call = (verb, url, data) ->
   url = "http://192.168.2.2#{url}"
   $.ajax {url: url, type: verb, data: data, cache: false}
   .fail (jqXHR, text) ->
-    Api.notify "The server is currently down. We will work to fix this error right away.", "error"
+    Api.notify {status: "error", message: "The server is currently down. We will work to fix this error right away."}
 
 Api.notify = (data) ->
     notification =
       type: data.status
       layout: "topRight"
-      text: "The server says: "+data.message
-      timeout: 1000
+      text: data.message
+      timeout: 2000
 
     Noty(notification)
 

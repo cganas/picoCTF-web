@@ -4,7 +4,7 @@ ReactDom = require 'react-dom'
 ReactRouter = require 'react-router'
 Router = ReactRouter.Router
 Route = ReactRouter.Route
-DefaultRoute = ReactRouter.DefaultRoute
+IndexRoute = ReactRouter.IndexRoute
 
 #Chrome dev-tools
 @React = React
@@ -15,7 +15,7 @@ FrontPage = require './views/front_page'
 ReactDom.render (
   <Router>
     <Route path="/" component={App}>
-      <Route path="test" component={FrontPage}/>
+      <IndexRoute component={FrontPage}/>
     </Route>
   </Router>
 ), document.getElementById 'app'

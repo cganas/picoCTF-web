@@ -3,7 +3,9 @@ update = require 'react-addons-update'
 
 Noty = require 'noty'
 
-Api = require './utils/api'
+Api = require './utils/api'#
+
+CompetitionNavbar = require "./componets/competition_navbar"
 
 App = React.createClass
 
@@ -13,7 +15,6 @@ App = React.createClass
   componentWillMount: ->
     Api.call "GET", "/api/user/status"
     .success ((resp) ->
-      Api.notify resp
       @setState update @state,
         status: $set: resp.data
     ).bind this
@@ -22,6 +23,7 @@ App = React.createClass
     childrenWithProps = React.Children.map @props.children, ((child) ->
                           React.cloneElement child, {status: @state.status}).bind this
     <div>
+      <CompetitionNavbar status={@state.status}/>
       <p>App</p>
       <div id="page">
         {childrenWithProps}

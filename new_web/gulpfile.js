@@ -11,7 +11,7 @@ var path = {
     HTML: "public/index.html",
     MINIFIED_OUT: "build.min.js",
     OUT: "build.js",
-    CJSX_SRC: "src/**/*.coffee",
+    CJSX_SRC: "src/**/*.cjsx",
     DEST: "dist",
     DEST_BUILD: "dist/build",
     DEST_SRC: "dist/src",
@@ -19,7 +19,7 @@ var path = {
 };
 
 gulp.task("copy", function(){
-    gulp.src(path.HTML)
+    gulp.src("public/**/*")
         .pipe(gulp.dest(path.DEST));
 });
 
