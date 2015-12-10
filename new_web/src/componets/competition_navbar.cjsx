@@ -19,7 +19,7 @@ ReactHelper = require "../utils/react_helper"
 
 inactiveCompetitionBlacklist = ["Problems"]
 anonymousBlacklist = ["Shell", "Problems", "Logout"]
-loggedInBlacklist = ["Login"]
+loggedInBlacklist = ["Login", "Register"]
 
 accessMapping =
   user:
@@ -27,6 +27,7 @@ accessMapping =
     Shell: "/shell"
     Scoreboard: "/scoreboard"
     Login: "/login"
+    Register: "/register"
   teacher:
     Problems: "/problems"
     Shell: "/shell"
@@ -81,7 +82,7 @@ CompetitionNavbar = React.createClass
         </Navbar.Brand>
         <Navbar.Toggle />
       </Navbar.Header>
-      <ReactHelper.ShowIf truthy={@props.logged_in}>
+      <ReactHelper.ShowIf truthy={@props.status.logged_in}>
         <Navbar.Collapse>
           <Nav pullRight>
             <li>
