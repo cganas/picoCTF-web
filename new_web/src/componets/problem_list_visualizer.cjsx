@@ -57,12 +57,12 @@ ProblemCategory = React.createClass
         <ProblemItem key={problem.name} {...@props} {...problem}/>}
     </div>
 
-class ProblemPopover extends Popover
+ProblemPopover = React.createClass
   render: ->
     popoverTitle = <span>{@props.name} <span className="pull-right">{@props.score}</span></span>
 
-    <Popover title={popoverTitle}>
-      body
+    <Popover id="problem-preview" title={popoverTitle}>
+      <div dangerouslySetInnerHTML={__html: @props.description}/>
     </Popover>
 
 ProblemExplorer = React.createClass
