@@ -1,8 +1,18 @@
+.problem-overlay {
+    min-width: 200px;
+    min-height: 200px;
+}
 
-.btn-sq {
-  width: 80px !important;
-  height: 80px !important;
-  font-size: 48px;
+.problem-item-unlocked {
+    background: gray;
+}
+.problem-item-solved {
+    background: black;
+}
+
+.problem-item {
+  width: 16px !important;
+  height: 16px !important;
 }
 
 .hard-right {
