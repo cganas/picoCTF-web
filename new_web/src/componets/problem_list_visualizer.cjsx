@@ -2,6 +2,7 @@ React = require 'react'
 ReactDOM = require 'react-dom'
 
 History = (require "react-router").History
+Link = (require "react-router").Link
 
 RB = require 'react-bootstrap'
 
@@ -41,9 +42,11 @@ ProblemItem = React.createClass
     showProblemPreview = _.partial @props.previewTriggers.showProblemPreview, @props
     hideProblemPreview = _.partial @props.previewTriggers.hideProblemPreview, @props
 
-    <div className={problemItemClass}
+    <Link to={"/problems/#{@props.pid}"}>
+      <div className={problemItemClass}
       onMouseEnter={showProblemPreview}
       onMouseLeave={hideProblemPreview}/>
+    </Link>
 
 ProblemCategory = React.createClass
   propTypes:
