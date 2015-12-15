@@ -23,7 +23,7 @@ Problem = React.createClass
 
   makeHeader: ->
     <div>
-      {@props.name} <span className="pull-right">{@props.score}</span>
+      {@props.name} <span className="pull-right">{@props.solves} - {@props.score}</span>
     </div>
 
   render: ->

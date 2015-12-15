@@ -13,9 +13,10 @@ Row = RB.Row
 Col = RB.Col
 Button = RB.Button
 Grid = RB.Grid
-
 Popover = RB.Popover
 Overlay = RB.Overlay
+
+Typeahead = require "./reasonable_typeahead"
 
 update = require 'react-addons-update'
 
@@ -72,6 +73,8 @@ ProblemPopover = React.createClass
 
 ProblemExplorer = React.createClass
 
+  mixins: [History]
+
   propTypes:
     problems: React.PropTypes.array.isRequired
 
@@ -91,6 +94,10 @@ ProblemExplorer = React.createClass
 
   makeOverlayTitle: (problem) ->
 
+  onProblemSelect: (problemName) ->
+    problem = _.find @props.problems, (problem) -> problem.name == problemName
+    @history.push "/problems/#{problem.pid}"
+
   render: ->
     problemCategories = _.groupBy @props.problems, "category"
 
@@ -100,10 +107,16 @@ ProblemExplorer = React.createClass
 
     <div>
       <Panel>
-        <h2 ref="problemHeading">
-          <Link to="/problems">Problems</Link>
-        </h2>
-        <hr/>
+        <div>
+          <h3 ref="problemHeading">
+              <Link to="/problems">Problems</Link>
+          </h3>
+          <Typeahead
+            options={_.map @props.problems, "name"}
+            onOptionSelected={@onProblemSelect}/>
+        </div>
+      </Panel>
+      <Panel>
         {_.map problemCategories, (problems, category) ->
           <ProblemCategory key={category} ref="problemPanel"
             previewTriggers={previewTriggers}
@@ -120,14 +133,4 @@ ProblemExplorer = React.createClass
       </Overlay>
     </div>
 
-ProblemListVisualizer = React.createClass
-
-  propTypes:
-    problems: React.PropTypes.array.isRequired
-
-  render: ->
-    <Row>
-      <ProblemExplorer problems={@props.problems}/>
-    </Row>
-
-module.exports = ProblemListVisualizer
+module.exports = ProblemExplorer

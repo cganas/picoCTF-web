@@ -19,7 +19,7 @@ LinkedStateMixin = require 'react-addons-linked-state-mixin'
 
 Api = require '../utils/api'
 
-ProblemListVisualizer = require '../components/problem_list_visualizer'
+ProblemExplorer = require '../components/problem_explorer'
 
 ProblemPage = React.createClass
 
@@ -39,7 +39,7 @@ ProblemPage = React.createClass
 
     <Grid fluid={true}>
       <Col xs={3}>
-        <ProblemListVisualizer problems={@state.problems}/>
+        <ProblemExplorer problems={@state.problems}/>
       </Col>
       <Col xs={9}>
         {problemView}

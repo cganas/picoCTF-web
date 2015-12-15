@@ -23,7 +23,6 @@ App = React.createClass
                           React.cloneElement child, {status: @state.status}
     <div>
       <CompetitionNavbar status={@state.status}/>
-      <p>App</p>
       <div id="page">
         {childrenWithProps}
       </div>
