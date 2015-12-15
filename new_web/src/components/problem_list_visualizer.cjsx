@@ -33,8 +33,8 @@ ProblemItem = React.createClass
   render: ->
     problemItemClass = classNames(
       "problem-item": true,
-      "problem-item-solved": @props.solved,
-      "problem-item-unlocked": @props.unlocked && !@props.solved,
+      "bg-success": @props.solved,
+      "bg-info": @props.unlocked && !@props.solved,
       "problem-item-locked": !@props.unlocked
     )
 

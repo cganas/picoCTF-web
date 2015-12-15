@@ -15,13 +15,6 @@
     padding: 2px;
 }
 
-.problem-item-unlocked {
-    background: gray;
-}
-.problem-item-solved {
-    background: black;
-}
-
 .problem-item {
   width: 16px !important;
   height: 16px !important;
