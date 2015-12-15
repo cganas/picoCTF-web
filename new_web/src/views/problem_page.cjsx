@@ -12,36 +12,14 @@ Col = RB.Col
 Button = RB.Button
 Grid = RB.Grid
 
+_ = require 'underscore'
+
 update = require 'react-addons-update'
 LinkedStateMixin = require 'react-addons-linked-state-mixin'
 
 Api = require '../utils/api'
 
-ProblemListVisualizer = require '../componets/problem_list_visualizer'
-
-ProblemViewer = React.createClass
-  render: ->
-
-    console.log "Problem"
-
-    <div>
-      problem {@props.params.pid}
-    </div>
-
-DefaultProblemViewer = React.createClass
-  render: ->
-    <div>
-      default list of problems
-    </div>
-
-CategoryViewer = React.createClass
-  render: ->
-
-    console.log "Navigator"
-
-    <div>
-      navigator {@props.params.category}
-    </div>
+ProblemListVisualizer = require '../components/problem_list_visualizer'
 
 ProblemPage = React.createClass
 
@@ -56,7 +34,8 @@ ProblemPage = React.createClass
 
   render: ->
 
-    problemView = @props.children
+    problemView = React.cloneElement @props.children,
+      problems: @state.problems
 
     <Grid fluid={true}>
       <Col xs={3}>
@@ -66,12 +45,5 @@ ProblemPage = React.createClass
         {problemView}
       </Col>
     </Grid>
-
-ProblemPage =
-  ProblemPage: ProblemPage
-  ProblemListVisualizer: ProblemListVisualizer
-  DefaultProblemViewer: DefaultProblemViewer
-  CategoryViewer: CategoryViewer
-  ProblemViewer: ProblemViewer
 
 module.exports = ProblemPage

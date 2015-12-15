@@ -17,7 +17,7 @@ LinkedStateMixin = require 'react-addons-linked-state-mixin'
 
 Api = require '../utils/api'
 
-UserLoginPage = React.createClass
+class UserLoginPage extends React.Component
   mixins: [LinkedStateMixin, History]
 
   getInitialState: ->

@@ -18,16 +18,17 @@ UserLoginPage = require "./views/user_login_page"
 
 ProblemPage = require "./views/problem_page"
 
+ProblemViewers = require "./components/problem_viewers"
 
 ReactDom.render (
   <Router history={createBrowserHistory()}>
     <Route path="/" component={App}>
       <Route path="login" component={UserLoginPage}/>
       <Route path="register" component={UserRegistrationPage}/>
-      <Route path="problems" component={ProblemPage.ProblemPage}>
-        <IndexRoute component={ProblemPage.DefaultProblemViewer}/>
-        <Route path="category/:category" component={ProblemPage.CategoryViewer}/>
-        <Route path=":pid" component={ProblemPage.ProblemViewer}/>
+      <Route path="problems" component={ProblemPage}>
+        <IndexRoute component={ProblemViewers.DefaultProblemViewer}/>
+        <Route path="category/:category" component={ProblemViewers.CategoryViewer}/>
+        <Route path=":pid" component={ProblemViewers.ProblemViewer}/>
       </Route>
       <IndexRoute component={FrontPage}/>
     </Route>

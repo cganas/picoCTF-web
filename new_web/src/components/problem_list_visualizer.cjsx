@@ -42,7 +42,7 @@ ProblemItem = React.createClass
     showProblemPreview = _.partial @props.previewTriggers.showProblemPreview, @props
     hideProblemPreview = _.partial @props.previewTriggers.hideProblemPreview, @props
 
-    <Link to={"/problems/#{@props.pid}"}>
+    <Link className="problem-item-container" to={"/problems/#{@props.pid}"}>
       <div className={problemItemClass}
       onMouseEnter={showProblemPreview}
       onMouseLeave={hideProblemPreview}/>
@@ -55,16 +55,18 @@ ProblemCategory = React.createClass
 
   render: ->
     <div>
-      <h3>{@props.category}</h3>
-      {_.map @props.problems, (problem) =>
-        <ProblemItem key={problem.name} {...@props} {...problem}/>}
+      <h3 className="problem-category">
+        <Link to={"/problems/category/#{@props.category}"}>{@props.category}</Link>
+      </h3>
+      {_.map _.sortBy(@props.problems, "score"), (problem) =>
+       <ProblemItem key={problem.name} {...@props} {...problem}/>}
     </div>
 
 ProblemPopover = React.createClass
   render: ->
     popoverTitle = <span>{@props.name} <span className="pull-right">{@props.score}</span></span>
 
-    <Popover id="problem-preview" title={popoverTitle}>
+    <Popover {...@props} id="problem-preview" title={popoverTitle}>
       <div dangerouslySetInnerHTML={__html: @props.description}/>
     </Popover>
 
@@ -98,7 +100,10 @@ ProblemExplorer = React.createClass
 
     <div>
       <Panel>
-        <h2 ref="problemHeading">Problems</h2>
+        <h2 ref="problemHeading">
+          <Link to="/problems">Problems</Link>
+        </h2>
+        <hr/>
         {_.map problemCategories, (problems, category) ->
           <ProblemCategory key={category} ref="problemPanel"
             previewTriggers={previewTriggers}
@@ -121,14 +126,8 @@ ProblemListVisualizer = React.createClass
     problems: React.PropTypes.array.isRequired
 
   render: ->
-    console.log @props.problems
-    <div>
-      <Row>
-        Space
-      </Row>
-      <Row>
-        <ProblemExplorer problems={@props.problems}/>
-      </Row>
-    </div>
+    <Row>
+      <ProblemExplorer problems={@props.problems}/>
+    </Row>
 
 module.exports = ProblemListVisualizer

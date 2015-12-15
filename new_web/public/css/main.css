@@ -1,6 +1,18 @@
+#problem-preview {
+    display: table !important;
+}
+
+.problem-category {
+    text-decoration: none;
+}
+
 .problem-overlay {
     min-width: 200px;
     min-height: 200px;
+}
+
+.problem-item-container {
+    padding: 2px;
 }
 
 .problem-item-unlocked {
@@ -13,6 +25,7 @@
 .problem-item {
   width: 16px !important;
   height: 16px !important;
+  display: inline-block;
 }
 
 .hard-right {

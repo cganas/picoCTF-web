@@ -5,7 +5,7 @@ Noty = require 'noty'
 
 Api = require './utils/api'
 
-CompetitionNavbar = require "./componets/competition_navbar"
+CompetitionNavbar = require "./components/competition_navbar"
 
 App = React.createClass
 
