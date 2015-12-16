@@ -26,16 +26,22 @@ ProblemPage = React.createClass
   getInitialState: ->
     problems: []
 
-  componentWillMount: ->
+  onProblemChange: (pid) ->
+    @props.onStatusChange()
     Api.call "GET", "/api/problems"
     .done (resp) =>
       @setState update @state,
         $set: problems: resp.data
 
+  componentWillMount: ->
+    @onProblemChange()
+
   render: ->
 
     problemView = React.cloneElement @props.children,
+      key: document.location.pathname
       problems: @state.problems
+      onProblemChange: @onProblemChange
 
     <Grid fluid={true}>
       <Col xs={3}>
