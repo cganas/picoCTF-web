@@ -13,9 +13,7 @@ Row = RB.Row
 Col = RB.Col
 Button = RB.Button
 Grid = RB.Grid
-
-Popover = RB.Popover
-Overlay = RB.Overlay
+Pagination = RB.Pagination
 
 update = require 'react-addons-update'
 
@@ -23,18 +21,46 @@ _ = require 'underscore'
 
 Problem = require './problem'
 
+ReactHelper = require "../utils/react_helper"
+
 Viewer = React.createClass
+
+  problemsPerPage: 4
 
   propTypes:
     problems: React.PropTypes.array.isRequired
     showFilter: React.PropTypes.func.isRequired
 
-  render: ->
-    shownProblems = @props.showFilter(@props.problems)
+  getInitialState: ->
+    activePage: 1
 
-    <div id="problem-list">
-      {_.map shownProblems, (problem) =>
-        <Problem key={problem.pid} {...problem}/>}
+  handlePageSelect: (e, selectedEvent) ->
+    @setState
+      activePage: selectedEvent.eventKey
+
+  render: ->
+    filteredProblems = @props.showFilter @props.problems
+    problemPages = parseInt (filteredProblems.length / @problemsPerPage)
+
+    activeIndex = @state.activePage - 1
+    startOfPage = activeIndex * @problemsPerPage
+    shownProblems = filteredProblems.slice startOfPage, startOfPage + @problemsPerPage
+
+    <div>
+      <ReactHelper.ShowIf truthy={problemPages > 1}>
+        <Pagination first next prev last ellipsis
+          maxButtons={5}
+          items={problemPages}
+          activePage={@state.activePage}
+          onSelect={@handlePageSelect}/>
+      </ReactHelper.ShowIf>
+      <div id="problem-list">
+        {_.map shownProblems, (problem) =>
+          <Problem
+            key={problem.pid}
+            onProblemChange={@props.onProblemChange}
+            {...problem}/>}
+      </div>
     </div>
 
 ProblemViewer = React.createClass
@@ -43,7 +69,6 @@ ProblemViewer = React.createClass
       problem.pid == @props.params.pid
 
   render: ->
-    console.log "problem"
     <Viewer showFilter={@showProblemFilter} {...@props}/>
 
 DefaultProblemViewer = React.createClass
