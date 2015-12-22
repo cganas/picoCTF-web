@@ -5,19 +5,23 @@ RB = require 'react-bootstrap'
 ListGroup = RB.ListGroup
 ListGroupItem = RB.ListGroupItem
 
+Panel = RB.Panel
+
 Typeahead = (require "react-typeahead").Typeahead
 
 _ = require "underscore"
 
 ReasonableList = React.createClass
   render: ->
-    console.log @props
-    <ListGroup>
-      {_.map @props.options, (option, i) =>
-        <ListGroupItem
-          onClick={_.partial @props.onOptionSelected, option}
-          key={i}>{option}</ListGroupItem>}
-    </ListGroup>
+    if @props.options.length > 0
+      <ListGroup>
+        {_.map @props.options, (option, i) =>
+          <ListGroupItem
+            onClick={_.partial @props.onOptionSelected, option}
+            key={i}>{option}</ListGroupItem>}
+      </ListGroup>
+    else
+      <Panel>No results found.</Panel>
 
 ReasonableTypeahead = React.createClass
   bootstrapClasses:

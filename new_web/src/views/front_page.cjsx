@@ -1,6 +1,6 @@
 React = require 'react'
 
-class FrontPage extends React.Component
+FrontPage = React.createClass
   render: ->
     <div>
       <p>Front Page</p>

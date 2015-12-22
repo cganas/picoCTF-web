@@ -17,7 +17,7 @@ LinkedStateMixin = require 'react-addons-linked-state-mixin'
 
 Api = require '../utils/api'
 
-class UserLoginPage extends React.Component
+UserLoginPage = React.createClass
   mixins: [LinkedStateMixin, History]
 
   getInitialState: ->
@@ -29,6 +29,7 @@ class UserLoginPage extends React.Component
     Api.call "POST", "/api/user/login", {username: @state.username, password: @state.password}
     .done (resp) =>
       if resp.status == "success"
+        @props.onStatusChange()
         @history.push "/profile"
       else
         Api.notify resp
