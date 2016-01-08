@@ -54,7 +54,7 @@ Problem = React.createClass
   makeFooter: ->
     <div>
       <span>Written by {@props.author} at {@props.organization}</span>
-      <span className="pull-right">Solves: {@props.solves}</span>
+      <span className="pull-right"><strong>Solves: {@props.solves}</strong></span>
     </div>
 
   onProblemSubmit: (e) ->
@@ -75,11 +75,11 @@ Problem = React.createClass
       <div dangerouslySetInnerHTML={__html: @props.description}/>
       <hr/>
       <ShowIf truthy={@props.solved}>
-        <Input type="text" label="Flag" bsStyle="success" hasFeedback disabled/>
+        <Input type="text" bsStyle="success" hasFeedback disabled/>
       </ShowIf>
       <ShowIf truthy={!@props.solved}>
         <form onSubmit={@onProblemSubmit}>
-          <Input type="text" label="Flag"
+          <Input type="text"
             buttonBefore={<Button type="submit">Submit</Button>}
             valueLink={@linkState "key"}/>
         </form>

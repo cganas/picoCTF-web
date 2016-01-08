@@ -15,6 +15,9 @@ Button = RB.Button
 Grid = RB.Grid
 Pagination = RB.Pagination
 
+Breadcrumb = RB.Breadcrumb
+BreadcrumbItem = RB.BreadcrumbItem
+
 update = require 'react-addons-update'
 
 _ = require 'underscore'
@@ -22,6 +25,52 @@ _ = require 'underscore'
 Problem = require './problem'
 
 ReactHelper = require "../utils/react_helper"
+
+ViewerToolbar = React.createClass
+  propTypes:
+    filteredProblems: React.PropTypes.array.isRequired
+    problemPages: React.PropTypes.number.isRequired
+    activePage: React.PropTypes.number.isRequired
+    handlePageSelect: React.PropTypes.func.isRequired
+
+  render: ->
+
+    if @props.filteredProblems.length > 0
+      firstProblem = _.first @props.filteredProblems
+
+      <Row>
+        <Col xs={5} style={marginLeft: "-15px"}>
+          <Breadcrumb className="pull-left">
+            <BreadcrumbItem href="/problems">
+              Problems
+            </BreadcrumbItem>
+
+            <BreadcrumbItem href="/problems/category/#{firstProblem.category}">
+              {firstProblem.category}
+            </BreadcrumbItem>
+
+            <ReactHelper.ShowIf truthy={@props.filteredProblems.length == 1}>
+              <BreadcrumbItem active>
+                {firstProblem.name}
+              </BreadcrumbItem>
+            </ReactHelper.ShowIf/>
+
+          </Breadcrumb>
+        </Col>
+        <Col xsOffset={2} xs={5}>
+          <ReactHelper.ShowIf truthy={@props.problemPages > 1}>
+            <Pagination first next prev last ellipsis
+              id="problem-pagination"
+              className="pull-right"
+              maxButtons={5}
+              items={@props.problemPages}
+              activePage={@props.activePage}
+              onSelect={@props.handlePageSelect}/>
+          </ReactHelper.ShowIf>
+        </Col>
+      </Row>
+    else
+      <div/>
 
 Viewer = React.createClass
 
@@ -40,6 +89,7 @@ Viewer = React.createClass
 
   render: ->
     filteredProblems = @props.showFilter @props.problems
+
     problemPages = parseInt (filteredProblems.length / @problemsPerPage)
 
     activeIndex = @state.activePage - 1
@@ -47,20 +97,20 @@ Viewer = React.createClass
     shownProblems = filteredProblems.slice startOfPage, startOfPage + @problemsPerPage
 
     <div>
-      <ReactHelper.ShowIf truthy={problemPages > 1}>
-        <Pagination first next prev last ellipsis
-          maxButtons={5}
-          items={problemPages}
-          activePage={@state.activePage}
-          onSelect={@handlePageSelect}/>
-      </ReactHelper.ShowIf>
-      <div id="problem-list">
+      <ViewerToolbar
+        handlePageSelect={@handlePageSelect}
+        activePage={@state.activePage}
+        filteredProblems={filteredProblems}
+        problemPages={problemPages}
+        {...@props}/>
+
+      <Row id="problem-list">
         {_.map shownProblems, (problem) =>
           <Problem
             key={problem.pid}
             onProblemChange={@props.onProblemChange}
             {...problem}/>}
-      </div>
+      </Row>
     </div>
 
 ProblemViewer = React.createClass

@@ -2,6 +2,14 @@
     display: table !important;
 }
 
+.top {
+    vertical-align: top;
+}
+
+#problem-pagination.pagination {
+    margin: 0 !important;
+}
+
 .problem-category {
     text-decoration: none;
 }
