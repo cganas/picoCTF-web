@@ -2,6 +2,8 @@ React = require 'react'
 
 RB = require 'react-bootstrap'
 
+Glyphicon = RB.Glyphicon
+
 ListGroup = RB.ListGroup
 ListGroupItem = RB.ListGroupItem
 
@@ -40,6 +42,7 @@ ReasonableTypeahead = React.createClass
   render: ->
     <Typeahead ref="type"
       defaultClassNames={false}
+      placeholder="Search..."
       customClasses={@bootstrapClasses}
       customListComponent={@props.customListComponent || ReasonableList}
       maxVisible={@props.maxVisible || 8}
