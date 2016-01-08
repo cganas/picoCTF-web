@@ -65,7 +65,7 @@ ProblemCategory = React.createClass
 
 ProblemPopover = React.createClass
   render: ->
-    popoverTitle = <span>{@props.name} <span className="pull-right">{@props.score}</span></span>
+    popoverTitle = <span><strong>{@props.name}</strong> {@props.score} <span className="pull-right">Solves: {@props.solves}</span></span>
 
     <Popover {...@props} id="problem-preview" title={popoverTitle}>
       <div dangerouslySetInnerHTML={__html: @props.description}/>
