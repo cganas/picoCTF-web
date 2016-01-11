@@ -28,9 +28,10 @@ UserLoginPage = React.createClass
     e.preventDefault()
     Api.call "POST", "/api/user/login", {username: @state.username, password: @state.password}
     .done (resp) =>
+      Api.notify resp
       if resp.status == "success"
         @props.onStatusChange()
-        @history.push "/problems"
+        @history.push "/profile"
       else
         Api.notify resp
 
@@ -46,7 +47,6 @@ UserLoginPage = React.createClass
           <Row>
             <Col md={6}>
                 <Button type="submit">Login</Button>
-                <Button onClick={() => @history.push "/register"}>Register</Button>
             </Col>
             <Col md={6}>
               <a className="pad" onClick={() => @history.push "/reset"}>Need to reset your password?</a>

@@ -2,10 +2,6 @@
 
 ROOT="/vagrant/picoCTF-web"
 
-# Transpile the CoffeeScript files
-echo "Transpiling Coffeescript"
-cjsx -bc -o $ROOT/web/js/ $ROOT/web/coffee/
-
 # Shutdown the server
 echo "Shutting down nginx"
 sudo service nginx stop
