@@ -92,8 +92,6 @@ ProblemExplorer = React.createClass
     @setState update @state,
       overlay: $set: {problem: problem, show: false, target: e.target}
 
-  makeOverlayTitle: (problem) ->
-
   onProblemSelect: (problemName) ->
     problem = _.find @props.problems, (problem) -> problem.name == problemName
     @history.push "/problems/#{problem.pid}"
