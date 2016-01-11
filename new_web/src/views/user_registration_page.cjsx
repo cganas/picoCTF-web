@@ -22,7 +22,7 @@ UserRegistrationPage = React.createClass
   mixins: [LinkedStateMixin, History]
 
   getInitialState: ->
-    eligibility: true
+    eligibility: "eligible"
 
   componentWillMount: ->
     Api.call "GET", "/api/team/settings"
@@ -34,7 +34,10 @@ UserRegistrationPage = React.createClass
     e.preventDefault()
     Api.call "POST", "/api/user/create_simple", @state
     .done (resp) =>
-      Api.notify resp
+      if resp.status == "success"
+        @history.push "/profile"
+      else
+        Api.notify resp
 
   render: ->
 

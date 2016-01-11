@@ -46,7 +46,6 @@ UserLoginPage = React.createClass
           <Row>
             <Col md={6}>
                 <Button type="submit">Login</Button>
-                <Button onClick={() => @history.push "/register"}>Register</Button>
             </Col>
             <Col md={6}>
               <a className="pad" onClick={() => @history.push "/reset"}>Need to reset your password?</a>
