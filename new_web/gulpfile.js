@@ -20,7 +20,7 @@ var path = {
 };
 
 gulp.task("deploy", function(){
-    gulp.src(path.DEST+"/**/*")
+    gulp.src([path.DEST+"/**/*"])
         .pipe(gulp.dest(path.DEPLOY_DEST));
 });
 
@@ -32,7 +32,7 @@ gulp.task("copy", function(){
 gulp.task("watch", function() {
     gulp.watch(path.HTML, ["copy"]);
     gulp.watch(path.CJSX_SRC, ["cjsx"]);
-    gulp.watch(path.DEST+"/**/*", ["deploy"]);
+    //gulp.watch(path.DEST+"/**/*", ["deploy"]);
 
     var watcher  = watchify(browserify({
         entries: [path.ENTRY_POINT],
@@ -41,13 +41,14 @@ gulp.task("watch", function() {
     }));
 
     return watcher.on("update", function () {
+        console.log("test");
         watcher.bundle()
             .pipe(source(path.OUT))
-            .pipe(gulp.dest(path.DEST_SRC));
+            .pipe(gulp.dest(path.DEPLOY_DEST + "/src"));
     })
         .bundle()
         .pipe(source(path.OUT))
-        .pipe(gulp.dest(path.DEST_SRC));
+        .pipe(gulp.dest(path.DEPLOY_DEST + "/src"));
 });
 
 gulp.task("default", ["watch"]);
