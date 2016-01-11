@@ -25,8 +25,11 @@ _ = require 'underscore'
 Problem = require './problem'
 
 ReactHelper = require "../utils/react_helper"
+ShowIf = ReactHelper.ShowIf
 
 ViewerToolbar = React.createClass
+  mixins: [History]
+
   propTypes:
     filteredProblems: React.PropTypes.array.isRequired
     problemPages: React.PropTypes.number.isRequired
@@ -41,24 +44,24 @@ ViewerToolbar = React.createClass
       <Row>
         <Col xs={5} style={marginLeft: "-15px"}>
           <Breadcrumb className="pull-left">
-            <BreadcrumbItem href="/problems">
+            <BreadcrumbItem onClick={() => @history.push "/problems"}>
               Problems
             </BreadcrumbItem>
 
-            <BreadcrumbItem href="/problems/category/#{firstProblem.category}">
+            <BreadcrumbItem onClick={() => @history.push "/problems/category/#{firstProblem.category}"}>
               {firstProblem.category}
             </BreadcrumbItem>
 
-            <ReactHelper.ShowIf truthy={@props.filteredProblems.length == 1}>
+            <ShowIf truthy={@props.filteredProblems.length == 1}>
               <BreadcrumbItem active>
                 {firstProblem.name}
               </BreadcrumbItem>
-            </ReactHelper.ShowIf/>
+            </ShowIf/>
 
           </Breadcrumb>
         </Col>
         <Col xsOffset={2} xs={5}>
-          <ReactHelper.ShowIf truthy={@props.problemPages > 1}>
+          <ShowIf truthy={@props.problemPages > 1}>
             <Pagination first next prev last ellipsis
               id="problem-pagination"
               className="pull-right"
@@ -66,7 +69,7 @@ ViewerToolbar = React.createClass
               items={@props.problemPages}
               activePage={@props.activePage}
               onSelect={@props.handlePageSelect}/>
-          </ReactHelper.ShowIf>
+          </ShowIf>
         </Col>
       </Row>
     else
