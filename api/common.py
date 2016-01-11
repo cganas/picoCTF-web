@@ -81,7 +81,7 @@ def WebSuccess(message=None, data=None):
     """
 
     return {
-        "status": 1,
+        "status": "success",
         "message": message,
         "data": data
     }
@@ -92,7 +92,7 @@ def WebError(message=None, data=None):
     """
 
     return {
-        "status": 0,
+        "status": "error",
         "message": message,
         "data": data
     }

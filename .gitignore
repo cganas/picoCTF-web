@@ -11,4 +11,7 @@ web/_site/
 web/_includes/analytics.html
 api/graders/autogentest/instances/*
 api/graders/*
+node_modules
+new_web/dist
+new_web/node_modules
 *~
