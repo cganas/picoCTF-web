@@ -13,15 +13,16 @@ sudo service nginx stop
 # Clean out the old files
 echo "Cleaning up old files"
 sudo rm -rf /srv/http/ctf/*
+sudo chown -R vagrant: /srv/http/ctf
 
 echo "Generating web"
 cd $ROOT/new_web
 tmux kill-session -t ctfweb 2> /dev/null
 if [[ $1 = "production" ]]; then
-    sudo gulp production
+    gulp production deploy
 else
-    sudo gulp copy cjsx
-    tmux new-session -s ctfweb -d "cd $ROOT/new_web && sudo gulp watch"
+    gulp copy cjsx deploy
+    tmux new-session -s ctfweb -d "cd $ROOT/new_web && gulp watch"
 fi
 
 # Make sure everything is in UNIX format.

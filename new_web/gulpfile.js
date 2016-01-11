@@ -12,11 +12,17 @@ var path = {
     MINIFIED_OUT: "build.min.js",
     OUT: "build.js",
     CJSX_SRC: "src/**/*.cjsx",
-    DEST: "/srv/http/ctf",
-    DEST_BUILD: "/srv/http/ctf",
-    DEST_SRC: "/srv/http/ctf",
-    ENTRY_POINT: "./dist/src/app_router.js"
+    DEST: "dist",
+    DEST_BUILD: "dist/build",
+    DEST_SRC: "dist/src",
+    ENTRY_POINT: "./dist/src/app_router.js",
+    DEPLOY_DEST: "/srv/http/ctf"
 };
+
+gulp.task("deploy", function(){
+    gulp.src(path.DEST+"/**/*")
+        .pipe(gulp.dest(path.DEPLOY_DEST));
+});
 
 gulp.task("copy", function(){
     gulp.src("public/**/*")
@@ -26,6 +32,7 @@ gulp.task("copy", function(){
 gulp.task("watch", function() {
     gulp.watch(path.HTML, ["copy"]);
     gulp.watch(path.CJSX_SRC, ["cjsx"]);
+    gulp.watch(path.DEST+"/**/*", ["deploy"]);
 
     var watcher  = watchify(browserify({
         entries: [path.ENTRY_POINT],
