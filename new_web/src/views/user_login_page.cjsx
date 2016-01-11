@@ -30,7 +30,7 @@ UserLoginPage = React.createClass
     .done (resp) =>
       if resp.status == "success"
         @props.onStatusChange()
-        @history.push "/profile"
+        @history.push "/problems"
       else
         Api.notify resp
 
