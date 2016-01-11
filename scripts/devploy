@@ -14,9 +14,15 @@ sudo service nginx stop
 echo "Cleaning up old files"
 sudo rm -rf /srv/http/ctf/*
 
-echo "Generating web with Jekyll"
-cd $ROOT/web
-sudo jekyll build
+echo "Generating web"
+cd $ROOT/new_web
+tmux kill-session -t ctfweb 2> /dev/null
+if [[ $1 = "production" ]]; then
+    sudo gulp production
+else
+    sudo gulp copy cjsx
+    tmux new-session -s ctfweb -d "cd $ROOT/new_web && sudo gulp watch"
+fi
 
 # Make sure everything is in UNIX format.
 sudo dos2unix -q /srv/http/ctf/*.html
@@ -55,4 +61,4 @@ tmux new-session -s ctfapi -d "cd $ROOT && $START_CMD"
 #Start Stats caching daemon
 echo "Starting the statistics caching daemon"
 tmux kill-session -t ctfstats 2> /dev/null
-tmux new-session -s ctfstats -d "daemon_manager -d $ROOT/daemons cache_stats"
+tmux new-session -s ctfstats -d "daemon_manager -d $ROOT/daemons cache_stats share_instances"

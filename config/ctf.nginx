@@ -1,7 +1,7 @@
 server {
         server_name ctf;
         listen       80;
-        root   /home/vagrant/dist;
+        root   /srv/http/ctf;
 
         ssl_protocols TLSv1.2 TLSv1.1 TLSv1;
 

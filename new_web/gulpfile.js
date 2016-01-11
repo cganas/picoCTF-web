@@ -12,9 +12,9 @@ var path = {
     MINIFIED_OUT: "build.min.js",
     OUT: "build.js",
     CJSX_SRC: "src/**/*.cjsx",
-    DEST: "dist",
-    DEST_BUILD: "dist/build",
-    DEST_SRC: "dist/src",
+    DEST: "/srv/http/ctf",
+    DEST_BUILD: "/srv/http/ctf",
+    DEST_SRC: "/srv/http/ctf",
     ENTRY_POINT: "./dist/src/app_router.js"
 };
 
