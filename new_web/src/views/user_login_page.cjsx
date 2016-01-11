@@ -28,11 +28,10 @@ UserLoginPage = React.createClass
     e.preventDefault()
     Api.call "POST", "/api/user/login", {username: @state.username, password: @state.password}
     .done (resp) =>
+      Api.notify resp
       if resp.status == "success"
         @props.onStatusChange()
         @history.push "/profile"
-      else
-        Api.notify resp
 
   render: ->
     userGlyph = <Glyphicon glyph="user"/>

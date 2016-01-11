@@ -34,10 +34,10 @@ UserRegistrationPage = React.createClass
     e.preventDefault()
     Api.call "POST", "/api/user/create_simple", @state
     .done (resp) =>
+      Api.notify resp
       if resp.status == "success"
+        @props.onStatusChange()
         @history.push "/profile"
-      else
-        Api.notify resp
 
   render: ->
 
