@@ -25,6 +25,8 @@ AdminManagementPage = require "./views/admin_management_page"
 ProblemPage = require "./views/problem_page"
 ProblemViewers = require "./components/problem_viewers"
 
+UserScoreboardPage = require "./views/user_scoreboard_page"
+
 ReactDom.render (
   <Router history={createBrowserHistory()}>
     <Route path="/" component={App}>
@@ -42,6 +44,8 @@ ReactDom.render (
       <Route path="management">
         <Route path=":tab" component={AdminManagementPage}/>
       </Route>
+
+      <Route path="scoreboard" component={UserScoreboardPage}/>
 
       <IndexRoute component={FrontPage}/>
     </Route>
