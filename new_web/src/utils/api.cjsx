@@ -5,8 +5,13 @@ Cookies = require "js-cookie"
 Api = {}
 
 Api.call = (verb, url, data) ->
+
+  if not data
+    data = {}
+
   if verb == "POST"
     data.token = Cookies.get "token"
+
   $.ajax {url: url, type: verb, data: data, cache: false}
   .fail (jqXHR, text) ->
     Api.notify {status: "error", message: "The server is currently down. We will work to fix this error right away."}
