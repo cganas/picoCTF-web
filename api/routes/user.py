@@ -139,5 +139,5 @@ def status_hook():
 @api_wrapper
 @require_login
 def shell_servers_hook():
-    servers = [{"host":server['host'], "protocol":server['protocol']} for server in api.shell_servers.get_servers()]
+    servers = [{"host":server['host'], "protocol":server['protocol'], "sid": server['sid']} for server in api.shell_servers.get_servers()]
     return WebSuccess(data=servers)

@@ -18,8 +18,11 @@ UserLoginPage = require "./views/user_login_page"
 UserLogoutPage = require "./views/user_logout_page"
 
 ProblemPage = require "./views/problem_page"
-
 ProblemViewers = require "./components/problem_viewers"
+
+ShellPage = require "./views/shell_page"
+ShellViewers = require "./components/shell_viewers"
+
 
 ReactDom.render (
   <Router history={createBrowserHistory()}>
@@ -31,6 +34,10 @@ ReactDom.render (
         <IndexRoute component={ProblemViewers.DefaultProblemViewer}/>
         <Route path="category/:category" component={ProblemViewers.CategoryViewer}/>
         <Route path=":pid" component={ProblemViewers.ProblemViewer}/>
+      </Route>
+      <Route path="shell" component={ShellPage}>
+        <IndexRoute component={ShellViewers.DefaultShellViewer}/>
+        <Route path=":sid" component={ShellViewers.ShellViewer}/>
       </Route>
       <IndexRoute component={FrontPage}/>
     </Route>
