@@ -11,6 +11,7 @@ Row = RB.Row
 Input = RB.Input
 Button = RB.Button
 Well = RB.Well
+Glyphicon = RB.Glyphicon
 
 update = require 'react-addons-update'
 
