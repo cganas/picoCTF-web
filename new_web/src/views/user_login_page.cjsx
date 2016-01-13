@@ -46,7 +46,7 @@ UserLoginPage = React.createClass
           <Input type="password" id="password" valueLink={@linkState "password"} addonBefore={lockGlyph} label="Password"/>
           <Row>
             <Col md={6}>
-                <Button type="submit">Login</Button>
+              <Button type="submit">Login</Button>
             </Col>
             <Col md={6}>
               <a className="pad" onClick={() => @history.push "/reset"}>Need to reset your password?</a>
