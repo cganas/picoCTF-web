@@ -12,6 +12,7 @@ Input = RB.Input
 Row = RB.Row
 Col = RB.Col
 Button = RB.Button
+Badge = RB.Badge
 Grid = RB.Grid
 
 Tabs = RB.Tabs
@@ -92,8 +93,6 @@ ScoreboardProgressionGraph = React.createClass
 
       console.log data
       scoreboardChartSettings =
-        pointHitDetectionRadius: 5
-        pointDotRadius: 1
         scaleShowGridLines: false
         pointDot: false
         bezierCurve: false
@@ -106,11 +105,19 @@ ScoreboardProgressionGraph = React.createClass
                             <%}%>
                           </div>"
 
-      <LineChart
-        className="center-block"
-        data={data}
-        options={scoreboardChartSettings}
-        style={width: "90%", height: "20%"}/>
+      <Row>
+        <Col xs={10}>
+          <LineChart
+            className="center-block"
+            data={data}
+            options={scoreboardChartSettings}
+            style={width: "90%", height: "20%"}/>
+        </Col>
+        <Col xs={2}>
+          {@props.topTeams.map (team, i) ->
+            <div style={color: data.datasets[i].strokeColor} key={i}>{team.name}</div>}
+        </Col>
+      </Row>
     else
       <span/>
 
