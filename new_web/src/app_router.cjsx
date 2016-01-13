@@ -27,8 +27,7 @@ ProblemViewers = require "./components/problem_viewers"
 
 UserScoreboardPage = require "./views/user_scoreboard_page"
 
-ReactDom.render (
-  <Router history={createBrowserHistory()}>
+ReactDom.render (<Router history={createBrowserHistory()}>
     <Route path="/" component={App}>
       <Route path="login" component={UserLoginPage}/>
       <Route path="logout" component={UserLogoutPage}/>
@@ -45,7 +44,10 @@ ReactDom.render (
         <Route path=":tab" component={AdminManagementPage}/>
       </Route>
 
-      <Route path="scoreboard" component={UserScoreboardPage}/>
+      <Redirect from="/scoreboard" to="/scoreboard/public"/>
+      <Route path="scoreboard">
+        <Route path=":group" component={UserScoreboardPage}/>
+      </Route>
 
       <IndexRoute component={FrontPage}/>
     </Route>

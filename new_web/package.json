@@ -20,6 +20,7 @@
     "history": "^1.13.1",
     "jquery": "^2.1.4",
     "js-cookie": "^2.0.4",
+    "lazy-req": "^1.1.0",
     "noty": "^2.3.7",
     "react": "^0.14.3",
     "react-addons-linked-state-mixin": "^0.14.3",
@@ -33,9 +34,8 @@
     "reactify": "^1.1.1",
     "underscore": "^1.8.3",
     "vinyl-source-stream": "^1.1.0",
-    "watchify": "^3.6.1"
-  },
-  "dependencies": {
+    "watchify": "^3.6.1",
+    "chart.js": "^1.0.2",
     "classnames": "^2.2.3",
     "history": "^1.17.0",
     "jquery": "^2.2.0",
@@ -45,6 +45,7 @@
     "react-addons-linked-state-mixin": "^0.14.6",
     "react-addons-update": "^0.14.6",
     "react-bootstrap": "^0.28.2",
+    "react-chartjs": "jhudson8/react-chartjs",
     "react-collapsible-mixin": "^1.0.0-pre.2",
     "react-dom": "^0.14.6",
     "react-router": "^1.0.3",
