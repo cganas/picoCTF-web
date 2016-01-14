@@ -25,7 +25,6 @@ ListGroupItem = RB.ListGroupItem
 Pagination = RB.Pagination
 
 ChartJS = require "rc-chartjs"
-
 LineChart = ChartJS.Line
 
 
@@ -86,9 +85,7 @@ ScoreboardProgressionGraph = React.createClass
           "#{d.getHours()}:#{d.getMinutes()} #{d.getMonth()+1}/#{d.getDay()}"
 
         datasets: []
-
       data.xLabels = data.labels
-
       for team, i in @props.topTeams
         data.datasets.push
           label: team.name
@@ -107,7 +104,7 @@ ScoreboardProgressionGraph = React.createClass
             className="center-block"
             data={data}
             options={scoreboardChartSettings}
-            style={width: "90%", height: "20%"}
+            style={width: "90%", height: "300px"}
             redraw/>
         </Col>
         <Col xs={2}>
@@ -123,7 +120,7 @@ ScoreboardProgressionGraph = React.createClass
         </Col>
       </Row>
     else
-      <p>test</p>
+      <span/>
 
 Scoreboard = React.createClass
   propTypes:
@@ -157,7 +154,7 @@ Scoreboard = React.createClass
       <Table responsive>
         <thead>
           <tr>
-            <th>#.</th>
+            <th>#</th>
             <th>Team</th>
             <th>Affiliation</th>
             <th>Score</th>
@@ -200,17 +197,19 @@ UserScoreboardPage = React.createClass
         Api.notify resp
       else
         @setState resp.data
-    @onGroupChange @props.params.group
+        @onGroupChange @props.params.group
 
   onGroupChange: (groupName) ->
+    console.log @state, groupName, "!"
     if groupName != "Public" and groupName != "Ineligible"
       group = _.find @state.groups, (currentGroup) -> currentGroup.name == groupName
-      Api.call "GET", "/api/stats/group/score_progression", {gid: group.gid}
-      .done (resp) =>
-        if resp.status == "success"
-          @setState update @state, $set: topTeams: resp.data
-        else
-          Api.notify resp
+      if group
+        Api.call "GET", "/api/stats/group/score_progression", {gid: group.gid}
+        .done (resp) =>
+          if resp.status == "success"
+            @setState update @state, $set: topTeams: resp.data
+          else
+            Api.notify resp
     else
       Api.call "GET", "/api/stats/top_teams/score_progression", {eligible: groupName == "Public"}
       .done (resp) =>
