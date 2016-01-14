@@ -27,14 +27,14 @@ DisableAccountForm = React.createClass
 
   onDisable: (e) ->
     e.preventDefault()
-    # TODO:
-    #confirmDialog("This will disable your account, drop you from your team, and prevent you from playing!", "Disable Account Confirmation", "Disable Account", "Cancel",
-    Api.call "POST", "/api/user/disable_account", @state
-    .done (resp) =>
-      Api.notify resp
-      if resp.status == "success"
-        @props.onStatusChange()
-        @history.push "/"
+    Api.confirmDialog "This will disable your account, drop you from your team, and prevent you from playing!", (=>
+      Api.call "POST", "/api/user/disable_account", @state
+      .done (resp) =>
+        Api.notify resp
+        if resp.status == "success"
+          @props.onStatusChange()
+          @history.push "/"
+    ), "Disable Account", "Cancel", "top", "danger"
 
   makeHeader: ->
     <div>
