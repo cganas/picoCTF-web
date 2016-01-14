@@ -65,7 +65,7 @@ ScoreboardProgressionGraph = React.createClass
 
   render: ->
 
-    if @props.topTeams.length > 0 and @props.active
+    if @props.topTeams.length > 0
       getClosestScore = (team, time) ->
         score = 0
         for submission in team.score_progression
@@ -76,7 +76,7 @@ ScoreboardProgressionGraph = React.createClass
         return score
 
       totalSubmissionsList = _.flatten(_.map @props.topTeams, "score_progression")
-      relevantSubmissionsList = _.sortBy(totalSubmissionsList, "time")[..30]
+      relevantSubmissionsList = _.sortBy(totalSubmissionsList, "time")[@numSubmissions..]
 
       submissionTimes = _.map relevantSubmissionsList, "time"
 
@@ -107,7 +107,8 @@ ScoreboardProgressionGraph = React.createClass
             className="center-block"
             data={data}
             options={scoreboardChartSettings}
-            style={width: "90%", height: "20%"}/>
+            style={width: "90%", height: "20%"}
+            redraw/>
         </Col>
         <Col xs={2}>
           <ListGroup id="top-scoreboard">
@@ -135,20 +136,6 @@ Scoreboard = React.createClass
     topTeams: []
 
   componentWillMount: ->
-    if @props.gid
-      Api.call "GET", "/api/stats/group/score_progression", {gid: @props.gid}
-      .done (resp) =>
-        if resp.status == "success"
-          @setState update @state, $set: topTeams: resp.data
-        else
-          Api.notify resp
-    else
-      Api.call "GET", "/api/stats/top_teams/score_progression", {eligible: @props.eligible}
-      .done (resp) =>
-        if resp.status == "success"
-          @setState update @state, $set: topTeams: resp.data
-        else
-          Api.notify resp
 
   handlePageSelect: (e, selectedEvent) ->
     @setState update @state, $set: activePage: selectedEvent.eventKey
@@ -166,9 +153,6 @@ Scoreboard = React.createClass
 
     <div>
       <ShowIf truthy={allTeams.length > 1 and @props.active}>
-        <ScoreboardProgressionGraph
-          {...@props}
-          topTeams={@state.topTeams}/>
       </ShowIf>
       <Table responsive>
         <thead>
@@ -207,7 +191,7 @@ UserScoreboardPage = React.createClass
     public: []
     groups: []
     ineligible: []
-    activeTab: @props.params.group
+    topTeams: []
 
   componentWillMount: ->
     Api.call "GET", "/api/stats/scoreboard"
@@ -216,35 +200,48 @@ UserScoreboardPage = React.createClass
         Api.notify resp
       else
         @setState resp.data
+    @onGroupChange @props.params.group
+
+  onGroupChange: (groupName) ->
+    if groupName != "Public" and groupName != "Ineligible"
+      group = _.find @state.groups, (currentGroup) -> currentGroup.name == groupName
+      Api.call "GET", "/api/stats/group/score_progression", {gid: group.gid}
+      .done (resp) =>
+        if resp.status == "success"
+          @setState update @state, $set: topTeams: resp.data
+        else
+          Api.notify resp
+    else
+      Api.call "GET", "/api/stats/top_teams/score_progression", {eligible: groupName == "Public"}
+      .done (resp) =>
+        if resp.status == "success"
+          @setState update @state, $set: topTeams: resp.data
+        else
+          Api.notify resp
 
   onTabSelect: (tab) ->
-    @setState update @state, $set: activeTab: tab
     @history.push "/scoreboard/#{tab}"
+    @onGroupChange tab
 
   render: ->
     <Grid>
+      <ScoreboardProgressionGraph topTeams={@state.topTeams}/>
       <Tabs activeKey={@props.params.group} onSelect={@onTabSelect}>
         <Tab eventKey="Public" title="Public">
           <Scoreboard
             name="Public"
-            eligible={true}
-            active={@state.activeTab == "Public"}
             teams={@state.public}/>
         </Tab>
         {@state.groups.map (group, i) =>
           <Tab key={group.gid} eventKey={group.name} title={group.name}>
             <Scoreboard
               name={group.name}
-              gid={group.gid}
-              active={@state.activeTab == group.name}
               teams={group.scoreboard}/>
           </Tab>}
         <ShowIf truthy={@state.ineligible.length > 0}>
           <Tab eventKey="Ineligible" title="Ineligible">
             <Scoreboard
               name="Ineligible"
-              active={@state.activeTab == "Ineligible"}
-              eligible={false}
               teams={@state.ineligible}/>
           </Tab>
         </ShowIf>
