@@ -44,7 +44,7 @@ ReactDom.render (<Router history={createBrowserHistory()}>
         <Route path=":tab" component={AdminManagementPage}/>
       </Route>
 
-      <Redirect from="/scoreboard" to="/scoreboard/public"/>
+      <Redirect from="/scoreboard" to="/scoreboard/Public"/>
       <Route path="scoreboard">
         <Route path=":group" component={UserScoreboardPage}/>
       </Route>
