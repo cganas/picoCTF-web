@@ -20,9 +20,9 @@ Api.notify = (data) ->
 
   Noty(notification)
 
-Api.confirmDialog = (text, onConfirm, confirmText, closeText, layout) ->
+Api.confirmDialog = (text, onConfirm, confirmText, closeText, layout, confirmButtonClass) ->
   okButton =
-    addClass: 'btn btn-primary'
+    addClass: 'btn btn-' + if confirmButtonClass != undefined then confirmButtonClass else "primary"
     text: if confirmText != undefined then confirmText else 'Ok'
     onClick: ($noty) =>
       onConfirm()
