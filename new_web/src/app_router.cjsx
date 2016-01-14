@@ -22,6 +22,10 @@ UserLogoutPage = require "./views/user_logout_page"
 
 AdminManagementPage = require "./views/admin_management_page"
 
+OrganizationManagementPage = require "./views/organization_management_page"
+ManageOrganizationOverview = require "./components/manage_organization_overview"
+ManageOrganization = require "./components/manage_organization"
+
 ProblemPage = require "./views/problem_page"
 ProblemViewers = require "./components/problem_viewers"
 
@@ -49,8 +53,12 @@ ReactDom.render (<Router history={createBrowserHistory()}>
         <Route path=":group" component={UserScoreboardPage}/>
       </Route>
 
+      <Route path="organization" component={OrganizationManagementPage}>
+        <IndexRoute component={ManageOrganizationOverview}/>
+        <Route path=":organization" component={ManageOrganization}/>
+      </Route>
+
       <IndexRoute component={FrontPage}/>
     </Route>
   </Router>
 ), document.getElementById 'app'
-
