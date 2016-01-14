@@ -19,13 +19,15 @@ Tabs = RB.Tabs
 Tab = RB.Tab
 Table = RB.Table
 
+ListGroup = RB.ListGroup
+ListGroupItem = RB.ListGroupItem
+
 Pagination = RB.Pagination
 
 ChartJS = require "rc-chartjs"
 
 LineChart = ChartJS.Line
 
-console.log ChartJS, LineChart, "asd"
 
 update = require 'react-addons-update'
 
@@ -36,6 +38,10 @@ Api = require '../utils/api'
 ScoreboardProgressionGraph = React.createClass
   propTypes:
     topTeams: React.PropTypes.array.isRequired
+
+  getInitialState: -> {}
+
+  numSubmissions: -30
 
   strokeColors: [
     "rgba(156,99,169,1)"
@@ -59,24 +65,24 @@ ScoreboardProgressionGraph = React.createClass
 
   render: ->
 
-    if @props.topTeams.length > 0
+    if @props.topTeams.length > 0 and @props.active
       getClosestScore = (team, time) ->
         score = 0
         for submission in team.score_progression
-          if submission.time < time
+          if submission.time <= time
             score = submission.score
           else
             break
         return score
 
       totalSubmissionsList = _.flatten(_.map @props.topTeams, "score_progression")
-      relevantSubmissionsList = _.sortBy(totalSubmissionsList, "time")[-15...]
+      relevantSubmissionsList = _.sortBy(totalSubmissionsList, "time")[..30]
 
       submissionTimes = _.map relevantSubmissionsList, "time"
 
       data =
         labels: _.map submissionTimes, (time) ->
-          d = new Date(time)
+          d = new Date(time * 1000)
           "#{d.getHours()}:#{d.getMinutes()} #{d.getMonth()+1}/#{d.getDay()}"
 
         datasets: []
@@ -91,20 +97,10 @@ ScoreboardProgressionGraph = React.createClass
           strokeColor: @strokeColors[i % @strokeColors.length]
           fillColor: @fillColors[i % @strokeColors.length]
 
-      console.log data
       scoreboardChartSettings =
         scaleShowGridLines: false
         pointDot: false
         bezierCurve: false
-        legendTemplate : "<div class=\"row\">
-                            <% for (var i=0; i<datasets.length; i++){%>
-                              <span style=\"color:<%=datasets[i].strokeColor%>\" class=\"pad glyphicon glyphicon-user\" aria-hidden=\"true\"></span>
-                              <%if(datasets[i].label){%>
-                                <%=datasets[i].label%>
-                              <%}%>
-                            <%}%>
-                          </div>"
-
       <Row>
         <Col xs={10}>
           <LineChart
@@ -114,12 +110,19 @@ ScoreboardProgressionGraph = React.createClass
             style={width: "90%", height: "20%"}/>
         </Col>
         <Col xs={2}>
+          <ListGroup id="top-scoreboard">
           {@props.topTeams.map (team, i) ->
-            <div style={color: data.datasets[i].strokeColor} key={i}>{team.name}</div>}
+            <ListGroupItem key={i}>
+              <span style={color: data.datasets[i].strokeColor}>{team.name}</span>
+              <ShowIf truthy={i == 0}>
+                <Glyphicon className="pull-right" glyph="king"/>
+              </ShowIf>
+            </ListGroupItem>}
+          </ListGroup>
         </Col>
       </Row>
     else
-      <span/>
+      <p>test</p>
 
 Scoreboard = React.createClass
   propTypes:
@@ -132,18 +135,25 @@ Scoreboard = React.createClass
     topTeams: []
 
   componentWillMount: ->
-    Api.call "GET", "/api/stats/top_teams/score_progression"
-    .done (resp) =>
-      if resp.status == "success"
-        @setState update @state, $set: topTeams: resp.data
-      else
-        Api.notify resp
+    if @props.gid
+      Api.call "GET", "/api/stats/group/score_progression", {gid: @props.gid}
+      .done (resp) =>
+        if resp.status == "success"
+          @setState update @state, $set: topTeams: resp.data
+        else
+          Api.notify resp
+    else
+      Api.call "GET", "/api/stats/top_teams/score_progression", {eligible: @props.eligible}
+      .done (resp) =>
+        if resp.status == "success"
+          @setState update @state, $set: topTeams: resp.data
+        else
+          Api.notify resp
 
   handlePageSelect: (e, selectedEvent) ->
     @setState update @state, $set: activePage: selectedEvent.eventKey
 
   render: ->
-    console.log @state
     allTeams = @props.teams.map (team, i) ->
       team["position"] = i+1
       team
@@ -155,8 +165,10 @@ Scoreboard = React.createClass
     shownTeams = allTeams.slice startOfPage, startOfPage + @teamsPerPage
 
     <div>
-      <ShowIf truthy={allTeams.length > 1}>
-        <ScoreboardProgressionGraph topTeams={@state.topTeams}/>
+      <ShowIf truthy={allTeams.length > 1 and @props.active}>
+        <ScoreboardProgressionGraph
+          {...@props}
+          topTeams={@state.topTeams}/>
       </ShowIf>
       <Table responsive>
         <thead>
@@ -195,6 +207,7 @@ UserScoreboardPage = React.createClass
     public: []
     groups: []
     ineligible: []
+    activeTab: @props.params.group
 
   componentWillMount: ->
     Api.call "GET", "/api/stats/scoreboard"
@@ -205,19 +218,36 @@ UserScoreboardPage = React.createClass
         @setState resp.data
 
   onTabSelect: (tab) ->
+    @setState update @state, $set: activeTab: tab
     @history.push "/scoreboard/#{tab}"
 
   render: ->
-    console.log @state, "bb"
     <Grid>
       <Tabs activeKey={@props.params.group} onSelect={@onTabSelect}>
-        <Tab eventKey="public" title="Public">
-          <Scoreboard name="Public" teams={@state.public}/>
+        <Tab eventKey="Public" title="Public">
+          <Scoreboard
+            name="Public"
+            eligible={true}
+            active={@state.activeTab == "Public"}
+            teams={@state.public}/>
         </Tab>
-        {@state.groups.map (group, i) ->
+        {@state.groups.map (group, i) =>
           <Tab key={group.gid} eventKey={group.name} title={group.name}>
-            <Scoreboard name={group.name} teams={group.scoreboard}/>
+            <Scoreboard
+              name={group.name}
+              gid={group.gid}
+              active={@state.activeTab == group.name}
+              teams={group.scoreboard}/>
           </Tab>}
+        <ShowIf truthy={@state.ineligible.length > 0}>
+          <Tab eventKey="Ineligible" title="Ineligible">
+            <Scoreboard
+              name="Ineligible"
+              active={@state.activeTab == "Ineligible"}
+              eligible={false}
+              teams={@state.ineligible}/>
+          </Tab>
+        </ShowIf>
       </Tabs>
     </Grid>
 
