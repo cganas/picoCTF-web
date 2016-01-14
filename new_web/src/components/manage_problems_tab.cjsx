@@ -360,7 +360,7 @@ ProblemList = React.createClass
       return <h4>No problems have been loaded. Click <a href='#'>here</a> to get started.</h4>
 
     problemComponents = @props.problems.map ((problem, i) ->
-      <Col xs={12}>
+      <Col xs={12} key={i}>
         <Problem key={problem.name} onProblemChange={@props.onProblemChange} submissions={@props.submissions[problem.name]} {...problem}/>
       </Col>
     ).bind this
@@ -403,19 +403,18 @@ ProblemListModifiers = React.createClass
   onMassChange: (enabled) ->
     change = if enabled then "enable" else "disable"
     changeNumber = @props.problems.length
-    window.confirmDialog "Are you sure you want to #{change} these #{changeNumber} problems?", "Mass Problem State Change",
-    "Yes", "No", (() ->
+    Api.confirmDialog "Are you sure you want to #{change} these #{changeNumber} problems?", (() =>
       calls = _.map @props.problems, (problem) ->
         Api.call "POST", "/api/admin/problems/availability", {pid: problem.pid, state: !enabled}
+
       ($.when.apply this, calls)
-        .done (() ->
-          if _.all(_.map arguments, (call) -> (_.first call).status == 1)
+        .done () =>
+          if _.all(_.map arguments, (call) -> (_.first call).status == "success")
             Api.notify {status: "success", message: "All problems have been successfully changed."}
           else
             Api.notify {status: "error", message: "There was an error changing some of the problems."}
           @props.onProblemChange()
-        ).bind this
-      ).bind this, () -> false
+    ), "Yes", "No"
 
   render: ->
     <Panel>
