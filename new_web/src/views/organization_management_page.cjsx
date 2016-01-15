@@ -47,7 +47,7 @@ OrganizationManagementPage = React.createClass
       userStatus: @props.status
       onGroupChange: @onGroupChange
 
-    <Grid>
+    <Grid fluid={true}>
       <Col xs={2}>
         <Nav bsStyle="pills" stacked activeKey={@state.activeTab} onSelect={@onSelect}>
           {@state.groups.map (group, i) =>
