@@ -77,7 +77,18 @@ ManageOrganization = React.createClass
     @onGroupChange()
 
   createInformationView: (sortedTeams, team) ->
+
     average = (data) -> (_.reduce(data, (a, b) -> a+b)/data.length).toFixed 2
+
+    sortedScores = _.map sortedTeams, "score"
+    minScore = _.first sortedScores
+    maxScore = _.last sortedScores
+    averageScore = parseInt average(sortedScores)
+
+    std = _.reduce(_.map(sortedScores, (score) ->
+      Math.pow (score - averageScore), 2), (runningTotal, score) ->
+      runningTotal + score)
+    stdDeviation = Math.pow((std / sortedScores.length), 1/2).toFixed 2
 
     categoryData = _.map sortedTeams, (team) ->
       relevantProblems = _.filter team.solved_problems, (problem) -> !problem.disabled
@@ -138,13 +149,29 @@ ManageOrganization = React.createClass
 
       averageData
 
-    <div>
-      <h4>{team.team_name} Performance vs. Organization Average</h4>
-      <RadarChart
-        width="400px"
-        height="400px"
-        data={generateRadarData team}
-        redraw/>
+    <div className="text-center">
+      <Panel>
+        <Col xs={3}>
+          <span>Min: {minScore}</span>
+        </Col>
+        <Col xs={3}>
+          <span>Max: {maxScore}</span>
+        </Col>
+        <Col xs={3}>
+          <span>Avg: {averageScore}</span>
+        </Col>
+        <Col xs={3}>
+          <span>You: <strong>{team.score}</strong></span>
+        </Col>
+      </Panel>
+      <div>
+        <h4>{team.team_name} Performance vs. Organization Average</h4>
+        <RadarChart
+          width="400px"
+          height="400px"
+          data={generateRadarData team}
+          redraw/>
+      </div>
       <ShowIf truthy={team.flagged_submissions.length > 0}>
         <Panel bsStyle="warning" header="Flagged Submissions">
           <Table responsive>
@@ -193,12 +220,15 @@ ManageOrganization = React.createClass
 
   render: ->
 
-    allTeams = _.union @state.members, @state.teachers
+    allTeams = _.union @state.teachers, @state.members
     sortedTeams = _.sortBy allTeams, "score"
     currentTeam = _.find allTeams, (team) => team.team_name == @state.currentTeamName
 
+    if not @state.currentTeamName
+      currentTeam = _.first allTeams
+
     <Tabs defaultActiveKey={1}>
-      <Tab eventKey={1} title="User Management">
+      <Tab style={paddingTop: 10} eventKey={1} title="User Management">
         <Col xs={6}>
           <MemberManagement
             gid={@props.gid}
@@ -231,7 +261,6 @@ GroupOptions = React.createClass
 
   render: ->
     <div>
-      <h4>Group Options</h4>
       <Panel>
         <form>
           <ShowIf truthy={@props.settings.hidden}>
@@ -310,7 +339,7 @@ GroupEmailWhitelist = React.createClass
     </div>
 
 MemberManagement = React.createClass
-  membersPerPage: 10
+  membersPerPage: 20
 
   getInitialState: ->
     activePage: 1
@@ -329,7 +358,6 @@ MemberManagement = React.createClass
     shownMembers = allMembers.slice startOfPage, startOfPage + @membersPerPage
 
     <div>
-      <h4>User Management</h4>
       <MemberInvitePanel {...@props}/>
       <ListGroup>
         {shownMembers.map (member, i) =>
@@ -364,35 +392,30 @@ MemberManagementItem = React.createClass
   render: ->
     <ListGroupItem>
       <Row>
-        <Col xs={2}>
+        <Col xs={6}>
           <ShowIf truthy={@props.teacher}>
             <Button bsStyle="success" className="btn-sq">
-              <Glyphicon glyph="user" bsSize="large"/>
               <p className="text-center">Coach</p>
             </Button>
           </ShowIf>
           <ShowIf truthy={!@props.teacher}>
             <Button bsStyle="primary" className="btn-sq">
-              <Glyphicon glyph="user" bsSize="large"/>
               <p className="text-center">User</p>
             </Button>
           </ShowIf>
-        </Col>
-        <Col xs={6}>
-          <span>
-            <a onClick={_.partial @props.onExamine, @props.team_name}>{@props.team_name}</a>
-            <strong><span className="pull-right">Score: {@props.score}</span></strong>
+          <span style={paddingLeft: 10}>
+            <a onClick={_.partial @props.onExamine, @props.team_name}>{@props.team_name}</a> <strong>{@props.score}</strong>
           </span>
         </Col>
-        <Col xs={4}>
-          <ButtonGroup vertical>
+        <Col xs={6}>
+          <ButtonGroup className="pull-right">
             <ShowIf truthy={@props.teacher}>
               <Button onClick={@switchUserRole.bind(null, @props.tid, "member")}>Make Member</Button>
             </ShowIf>
             <ShowIf truthy={!@props.teacher}>
               <Button onClick={@switchUserRole.bind(null, @props.tid, "teacher")}>Make Coach</Button>
             </ShowIf>
-            <Button onClick={@removeTeam}>Remove User</Button>
+            <Glyphicon style={paddingLeft: 20} glyph="remove" onClick={@removeTeam}/>
           </ButtonGroup>
         </Col>
       </Row>
