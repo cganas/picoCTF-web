@@ -75,7 +75,7 @@ ScoreboardProgressionGraph = React.createClass
         return score
 
       totalSubmissionsList = _.flatten(_.map @props.topTeams, "score_progression")
-      relevantSubmissionsList = _.sortBy(totalSubmissionsList, "time")[..30]
+      relevantSubmissionsList = _.sortBy(totalSubmissionsList, "time")[@numSubmissions..]
 
       submissionTimes = _.map relevantSubmissionsList, "time"
 
@@ -98,7 +98,7 @@ ScoreboardProgressionGraph = React.createClass
         scaleShowGridLines: false
         pointDot: false
         bezierCurve: false
-        
+
       <Row>
         <Col xs={10}>
           <LineChart
