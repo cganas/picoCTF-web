@@ -6,8 +6,6 @@ History = (require "react-router").History
 
 RB = require 'react-bootstrap'
 
-ListGroupItem = RB.ListGroupItem
-ListGroup = RB.ListGroup
 Accordion = RB.Accordion
 Panel = RB.Panel
 Button = RB.Button
@@ -15,12 +13,8 @@ Glyphicon = RB.Glyphicon
 Grid = RB.Grid
 Row = RB.Row
 Col = RB.Col
-Badge = RB.Badge
 Input = RB.Input
-Button = RB.Button
 ButtonToolbar = RB.ButtonToolbar
-Well = RB.Well
-Accordion = RB.Accordion
 
 _ = require 'underscore'
 
@@ -37,7 +31,12 @@ ServerForm = React.createClass
 
   getInitialState: ->
     if @props.new
-      {"host": "", "port": 22, "username": "", "password": "", "protocol": "HTTP", "name": ""}
+      host: ""
+      port: 22
+      username: ""
+      password: ""
+      protocol: "HTTP"
+      name: ""
     else
       @props.server
 
@@ -75,7 +74,7 @@ ServerForm = React.createClass
       <Input type="text" label="Host" valueLink={@linkState "host"}/>
       <Input type="number" label="SSH Port" valueLink={@linkState "port"}/>
       <Input type="text" label="Username" valueLink={@linkState "username"}/>
-      <Input type="text" label="Password" valueLink={@linkState "password"}/>
+      <Input type="password" label="Password" valueLink={@linkState "password"}/>
       <Input type="select" label="Web Security" placeholder="HTTP" valueLink={@linkState "protocol"}>
         <option value="HTTP">HTTP</option>
         <option value="HTTPS">HTTPS</option>
@@ -133,17 +132,15 @@ ShellServerList = React.createClass
 ShellServersTab = React.createClass
 
   render: ->
-    <Well>
-      <Grid>
+    <Grid>
+      <Col xs={8} xsOffset={2}>
         <Row>
-          <h4>To add problems, enter your shell server information below.</h4>
+          <h4 className="text-center">To add problems, enter your shell server information below.</h4>
         </Row>
         <Row>
-          <Col md={6}>
-            <ShellServerList/>
-          </Col>
+          <ShellServerList/>
         </Row>
-      </Grid>
-    </Well>
+      </Col>
+    </Grid>
 
 module.exports = ShellServersTab
