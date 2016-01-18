@@ -23,6 +23,7 @@ ProblemViewers = require "./components/problem_viewers"
 ShellPage = require "./views/shell_page"
 ShellViewers = require "./components/shell_viewers"
 
+AccountPage = require "./views/account_page"
 
 ReactDom.render (
   <Router history={createBrowserHistory()}>
@@ -39,6 +40,7 @@ ReactDom.render (
         <IndexRoute component={ShellViewers.DefaultShellViewer}/>
         <Route path=":sid" component={ShellViewers.ShellViewer}/>
       </Route>
+      <Route path="account" component={AccountPage}/>
       <IndexRoute component={FrontPage}/>
     </Route>
   </Router>
