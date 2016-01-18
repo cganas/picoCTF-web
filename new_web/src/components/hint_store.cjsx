@@ -27,7 +27,7 @@ Hint = React.createClass
       <div>
         <Glyphicon
           style={paddingRight: 5}
-          glyph="sunglasses"
+          glyph="question-sign"
           onClick={@onHintClick}/>
         <ShowIf truthy={@state.extended}>
           <span dangerouslySetInnerHTML={__html: @props.hint}/>
