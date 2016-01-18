@@ -93,7 +93,7 @@ Viewer = React.createClass
   render: ->
     filteredProblems = @props.showFilter @props.problems
 
-    problemPages = parseInt (filteredProblems.length / @problemsPerPage)
+    problemPages = parseInt (filteredProblems.length / @problemsPerPage) + 1
 
     activeIndex = @state.activePage - 1
     startOfPage = activeIndex * @problemsPerPage
