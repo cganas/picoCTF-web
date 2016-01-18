@@ -32,12 +32,12 @@ accessMapping =
     Problems: "/problems"
     Shell: "/shell"
     Scoreboard: "/scoreboard"
-    Classroom: "/classroom"
+    Organization: "/organization"
   admin:
     Problems: "/problems"
     Shell: "/shell"
     Scoreboard: "/scoreboard"
-    Classroom: "/classroom"
+    Organization: "/organization"
     Management: "/management"
 
 

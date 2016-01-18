@@ -75,7 +75,7 @@ ScoreboardProgressionGraph = React.createClass
         return score
 
       totalSubmissionsList = _.flatten(_.map @props.topTeams, "score_progression")
-      relevantSubmissionsList = _.sortBy(totalSubmissionsList, "time")[@numSubmissions..]
+      relevantSubmissionsList = _.sortBy(totalSubmissionsList, "time")[..30]
 
       submissionTimes = _.map relevantSubmissionsList, "time"
 
@@ -98,6 +98,7 @@ ScoreboardProgressionGraph = React.createClass
         scaleShowGridLines: false
         pointDot: false
         bezierCurve: false
+        
       <Row>
         <Col xs={10}>
           <LineChart
@@ -131,8 +132,6 @@ Scoreboard = React.createClass
   getInitialState: ->
     activePage: 1
     topTeams: []
-
-  componentWillMount: ->
 
   handlePageSelect: (e, selectedEvent) ->
     @setState update @state, $set: activePage: selectedEvent.eventKey
@@ -200,7 +199,6 @@ UserScoreboardPage = React.createClass
         @onGroupChange @props.params.group
 
   onGroupChange: (groupName) ->
-    console.log @state, groupName, "!"
     if groupName != "Public" and groupName != "Ineligible"
       group = _.find @state.groups, (currentGroup) -> currentGroup.name == groupName
       if group
