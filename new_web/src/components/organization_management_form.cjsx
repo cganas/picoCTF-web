@@ -38,7 +38,6 @@ OrganizationManagementForm = React.createClass
         Api.notify resp
 
   render: ->
-    console.log @state
     <Panel header="Organization Management">
       <Table>
         <thead>
