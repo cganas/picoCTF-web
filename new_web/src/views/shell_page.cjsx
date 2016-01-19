@@ -34,17 +34,21 @@ ShellPage = React.createClass
 
     <Grid fluid={true}>
       <ShowIf truthy={@state.servers.length > 1}>
-        <Col xs={3}>
-          <ShellServerList servers={@state.servers}/>
-        </Col>
-        <Col xs={9}>
-          {serverView}
-        </Col>
+        <div>
+          <Col xs={3}>
+            <ShellServerList servers={@state.servers}/>
+          </Col>
+          <Col xs={9}>
+            {serverView}
+          </Col>
+        </div>
       </ShowIf>
       <ShowIf truthy={@state.servers.length <= 1}>
-        <Col xs={10} xsOffset={1}>
-          {serverView}
-        </Col>
+        <div>
+          <Col xs={10} xsOffset={1}>
+            {serverView}
+          </Col>
+        </div>
       </ShowIf>
     </Grid>
 
