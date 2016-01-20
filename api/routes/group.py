@@ -128,6 +128,20 @@ def get_group_list_hook():
     user = api.user.get_user()
     return WebSuccess(data=api.team.get_groups(uid=user["uid"]))
 
+@blueprint.route('/all')
+@api_wrapper
+def get_full_group_list_hook():
+    all_groups = api.group.get_all_groups()
+
+    marshal_group = lambda group: {
+        "gid": group["gid"],
+        "name": group["name"],
+        "settings": api.group.get_group_settings(group["gid"])
+    }
+
+    data = [marshal_group(group) for group in all_groups]
+    return WebSuccess(data=data)
+
 @blueprint.route('/teacher_information', methods=['GET'])
 @api_wrapper
 @require_teacher
