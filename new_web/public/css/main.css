@@ -2,6 +2,16 @@
     display: table !important;
 }
 
+.btn-sq {
+    height: 32px;
+    width: 64px;
+}
+
+.solved-problems-table {
+    overflow-y: auto;
+    max-height: 570px;
+}
+
 .top {
     vertical-align: top;
 }

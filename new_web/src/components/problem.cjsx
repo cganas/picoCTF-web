@@ -19,6 +19,8 @@ Button = RB.Button
 Grid = RB.Grid
 Badge = RB.Badge
 
+HintStore = require "../components/hint_store"
+
 Api = require "../utils/api"
 
 update = require 'react-addons-update'
@@ -72,7 +74,8 @@ Problem = React.createClass
     )
 
     <Panel className={problemClass} header={@makeHeader()} footer={@makeFooter()}>
-      <div dangerouslySetInnerHTML={__html: @props.description}/>
+      <div style={paddingBottom: 20} dangerouslySetInnerHTML={__html: @props.description}/>
+      <HintStore hints={@props.hints}/>
       <hr/>
       <ShowIf truthy={@props.solved}>
         <Input type="text" bsStyle="success" hasFeedback disabled/>

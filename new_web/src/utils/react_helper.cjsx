@@ -9,7 +9,7 @@ ShowIf = React.createClass
 
   render: ->
     if @props.truthy or (@props.f and @props.f())
-      <div>{@props.children}</div>
+      @props.children
     else
       <span className="hidden"/>
 
