@@ -43,7 +43,9 @@ ReactDom.render (
     <Route path="/" component={App}>
       <Route path="login" component={UserLoginPage}/>
       <Route path="logout" component={UserLogoutPage}/>
+
       <Route path="register" component={UserRegistrationPage}/>
+      <Route path="register/:rid/:gid" component={UserRegistrationPage}/>
 
       <Route path="problems" component={ProblemPage}>
         <IndexRoute component={ProblemViewers.DefaultProblemViewer}/>
