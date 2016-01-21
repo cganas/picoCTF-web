@@ -91,7 +91,7 @@ CompetitionNavbar = React.createClass
               </Link>
             </li>
             <li>
-              <Link to="/profile">
+              <Link to="/">
                 <Glyphicon glyph="flash"/> {@props.status.score}
               </Link>
             </li>
