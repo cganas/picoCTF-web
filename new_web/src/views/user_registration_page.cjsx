@@ -73,7 +73,7 @@ UserRegistrationPage = React.createClass
 
     activeOrganization = _.find @state.allGroups, (group) => group.gid == @state.gid
 
-    if activeOrganization
+    if activeOrganization?
       emailBanner =
       <Alert>
         You <strong>must</strong> have an email from one of these domains to register with the {activeOrganization.name}: <strong>{activeOrganization.settings.email_filter.join ", "}</strong>.
@@ -112,6 +112,9 @@ UserRegistrationPage = React.createClass
           <ShowIf truthy={activeOrganization? and activeOrganization.settings.email_filter.length > 0 and !@state.rid}>
             {emailBanner}
           </ShowIf>
+          <ShowIf truthy={@state.gid? and not activeOrganization? and @state.allGroups.length > 0}>
+            <Alert bsStyle="danger">Your invitation link does not encode for a valid group. Please check the integrity of your URL.</Alert>
+          </ShowIf>
           <ShowIf truthy={!@state.rid}>
             <Row>
               <Col md={12}>
@@ -130,7 +133,7 @@ UserRegistrationPage = React.createClass
               <Typeahead
                 options={_.map @state.allGroups, "name"}
                 onOptionSelected={@onOrganizationSelect}
-                value={if activeOrganization? then activeOrganization.name else null}/>
+                value={if activeOrganization? then activeOrganization.name}/>
             </Col>
             <Col md={6}>
               <Input type="select" label="Status" placeholder="Competitor" valueLink={@linkState "eligibility"}>
