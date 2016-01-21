@@ -47,6 +47,12 @@ UserRegistrationPage = React.createClass
   onUserRegistration: (e) ->
     e.preventDefault()
 
+    data = @state
+    if @state.gid?
+      data.affiliation = (@getGroup @state.gid).name
+    else
+      data.affiliation = "N/A"
+
     Api.call "POST", "/api/user/create_simple", @state
     .done (resp) =>
       Api.notify resp
@@ -65,13 +71,22 @@ UserRegistrationPage = React.createClass
   onOrganizationRemove: ->
     @setState update @state, $set: gid: null
 
+  getGroup: (gid) ->
+    _.find @state.allGroups, (group) => group.gid == gid
+
   render: ->
 
     console.log @state
     userGlyph = <Glyphicon glyph="user"/>
     lockGlyph = <Glyphicon glyph="lock"/>
 
-    activeOrganization = _.find @state.allGroups, (group) => group.gid == @state.gid
+    activeOrganization = @getGroup @state.gid
+
+    if @state.teamSettings? and @state.teamSettings.email_filter.length > 0
+      emailBanner =
+      <Alert>
+        You <strong>must</strong> have an email from one of these domains to register: <strong>{@state.teamSettings.email_filter.join ", "}</strong>.
+      </Alert>
 
     if activeOrganization?
       emailBanner =
@@ -110,6 +125,9 @@ UserRegistrationPage = React.createClass
             </Col>
           </Row>
           <ShowIf truthy={activeOrganization? and activeOrganization.settings.email_filter.length > 0 and !@state.rid}>
+            {emailBanner}
+          </ShowIf>
+          <ShowIf truthy={not activeOrganization? and @state.teamSettings? and @state.teamSettings.email_filter.length > 0}>
             {emailBanner}
           </ShowIf>
           <ShowIf truthy={@state.gid? and not activeOrganization? and @state.allGroups.length > 0}>
