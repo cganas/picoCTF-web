@@ -235,13 +235,12 @@ UserScoreboardPage = React.createClass
               name={group.name}
               teams={group.scoreboard}/>
           </Tab>}
-        <ShowIf truthy={@state.ineligible.length > 0}>
+        {if @state.ineligible.length > 0
           <Tab eventKey="Ineligible" title="Ineligible">
             <Scoreboard
               name="Ineligible"
               teams={@state.ineligible}/>
-          </Tab>
-        </ShowIf>
+          </Tab>}
       </Tabs>
     </Grid>
 
