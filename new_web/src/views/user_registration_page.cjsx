@@ -162,11 +162,11 @@ UserRegistrationPage = React.createClass
                 value={@state.gid}
                 clearable={false}
                 disabled={@state.noOrganization}
-                onChange={(val) => @setState update @state, $set: gid: val.value}
+                onChange={(option) => @setState update @state, $set: gid: option.value}
               />
             </Col>
             <Col md={6}>
-              <Input type="select" label="Status" placeholder="Competitor">
+              <Input type="select" label="Status" placeholder="Competitor" valueLink={@linkState "eligibility"}>
                 <option value="eligible">Competitor</option>
                 <option value="ineligible">Instructor</option>
               </Input>
