@@ -16,6 +16,7 @@ ButtonInput = RB.ButtonInput
 
 ShowIf = (require "../utils/react_helper").ShowIf
 Typeahead = require "../components/reasonable_typeahead"
+Select = require "react-select"
 
 update = require 'react-addons-update'
 LinkedStateMixin = require 'react-addons-linked-state-mixin'
@@ -30,6 +31,7 @@ UserRegistrationPage = React.createClass
     state =
       eligibility: "eligible"
       allGroups: []
+      noOrganization: false
       gid: @props.params.gid
       rid: @props.params.rid
 
@@ -48,10 +50,10 @@ UserRegistrationPage = React.createClass
     e.preventDefault()
 
     data = @state
-    if @state.gid?
-      data.affiliation = (@getGroup @state.gid).name
-    else
+    if @state.noOrganization
       data.affiliation = "N/A"
+    else
+      data.affiliation = (@getGroup @state.gid).name
 
     Api.call "POST", "/api/user/create_simple", @state
     .done (resp) =>
@@ -76,7 +78,6 @@ UserRegistrationPage = React.createClass
 
   render: ->
 
-    console.log @state
     userGlyph = <Glyphicon glyph="user"/>
     lockGlyph = <Glyphicon glyph="lock"/>
 
@@ -104,6 +105,14 @@ UserRegistrationPage = React.createClass
       <label style={width: "100%"}>
         Organization <span className="pull-right">Selected: {activeOrganization.name} {removalButton}</span>
       </label>
+    else
+      selectedLabel =
+      <label style={width: "100%"}>
+        Organization <span className="pull-right no-org"><Input type="checkbox" label="I am not with an organization."
+          checked={@state.noOrganization} onChange={() => @setState update @state, $set: noOrganization: !@state.noOrganization}/></span>
+      </label>
+
+    console.log @state
 
     <Grid>
       <Panel>
@@ -124,15 +133,18 @@ UserRegistrationPage = React.createClass
               <Input type="text" id="last-name" valueLink={@linkState "lastname"} label="Last Name"/>
             </Col>
           </Row>
+
           <ShowIf truthy={activeOrganization? and activeOrganization.settings.email_filter.length > 0 and !@state.rid}>
             {emailBanner}
           </ShowIf>
           <ShowIf truthy={not activeOrganization? and @state.teamSettings? and @state.teamSettings.email_filter.length > 0}>
             {emailBanner}
           </ShowIf>
+
           <ShowIf truthy={@state.gid? and not activeOrganization? and @state.allGroups.length > 0}>
             <Alert bsStyle="danger">Your invitation link does not encode for a valid group. Please check the integrity of your URL.</Alert>
           </ShowIf>
+
           <ShowIf truthy={!@state.rid}>
             <Row>
               <Col md={12}>
@@ -140,21 +152,21 @@ UserRegistrationPage = React.createClass
               </Col>
             </Row>
           </ShowIf>
+
           <Row>
             <Col md={6}>
-              <ShowIf truthy={activeOrganization?}>
-                {selectedLabel}
-              </ShowIf>
-              <ShowIf truthy={!activeOrganization?}>
-                <label>Organization</label>
-              </ShowIf>
-              <Typeahead
-                options={_.map @state.allGroups, "name"}
-                onOptionSelected={@onOrganizationSelect}
-                value={if activeOrganization? then activeOrganization.name}/>
+              {selectedLabel}
+              <Select
+                name="form-field-name"
+                options={_.map @state.allGroups, (g) -> {label: g.name, value: g.gid}}
+                value={@state.gid}
+                clearable={false}
+                disabled={@state.noOrganization}
+                onChange={(val) => @setState update @state, $set: gid: val.value}
+              />
             </Col>
             <Col md={6}>
-              <Input type="select" label="Status" placeholder="Competitor" valueLink={@linkState "eligibility"}>
+              <Input type="select" label="Status" placeholder="Competitor">
                 <option value="eligible">Competitor</option>
                 <option value="ineligible">Instructor</option>
               </Input>
