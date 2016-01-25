@@ -182,7 +182,7 @@ def validate(schema, data):
     try:
         schema(data)
     except MultipleInvalid as error:
-        raise APIException(0, None, error.msg)
+        raise WebException(error.msg)
 
 def safe_fail(f, *args, **kwargs):
     """

@@ -127,8 +127,8 @@ def send_email_invite(gid, email, teacher=False):
 
     token_value = api.token.set_token({"gid": group["gid"], "email": email, "teacher": teacher}, "registration_token")
 
-    registration_link = "{}/#g={}&r={}".\
-        format(api.config.competition_urls[0], group["gid"], token_value)
+    registration_link = "{}/register/{}/{}/".\
+        format(api.config.competition_urls[0], token_value, group["gid"])
 
     body = """
 You have been invited by the staff of the {1} organization to compete in {0}.

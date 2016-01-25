@@ -2,6 +2,15 @@
     display: table !important;
 }
 
+span.no-org {
+    height: 16px;
+}
+
+.checkbox {
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}
+
 .btn-sq {
     height: 32px;
     width: 64px;

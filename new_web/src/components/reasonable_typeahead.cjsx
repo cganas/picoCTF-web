@@ -30,22 +30,31 @@ ReasonableTypeahead = React.createClass
     input: "input form-control"
 
   onOptionSelectedWrapper: (option) ->
-    @refs.type.setState
-       entryValue: ''
-       selection: null
-       selectionIndex: null
-       visible: []
+    if @props.clear
+      @refs.type.setState
+        entryValue: ''
+        selection: null
+        selectionIndex: null
+        visible: []
 
     if @props.onOptionSelected
       @props.onOptionSelected option
 
+  clearOnFocus: ->
+    @refs.type.setState
+      entryValue: ''
+      selection: null
+      selectionIndex: null
+      visible: []
+
   render: ->
     <Typeahead ref="type"
       defaultClassNames={false}
-      placeholder="Search..."
+      placeholder={@props.placeholder || "Search..."}
       customClasses={@bootstrapClasses}
       customListComponent={@props.customListComponent || ReasonableList}
       maxVisible={@props.maxVisible || 8}
+      onFocus={@props.onFocus || @clearOnFocus}
       {...@props}
       onOptionSelected={@onOptionSelectedWrapper}/>
 

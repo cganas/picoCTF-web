@@ -31,7 +31,7 @@ UserLoginPage = React.createClass
       Api.notify resp
       if resp.status == "success"
         @props.onStatusChange()
-        @history.push "/profile"
+        @history.push "/"
 
   render: ->
     userGlyph = <Glyphicon glyph="user"/>

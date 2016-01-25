@@ -110,6 +110,7 @@ ProblemExplorer = React.createClass
               <Link to="/problems">Problems</Link>
           </h3>
           <Typeahead
+            clear={true}
             options={_.map @props.problems, "name"}
             onOptionSelected={@onProblemSelect}/>
         </div>
