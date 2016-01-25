@@ -53,7 +53,13 @@ UserRegistrationPage = React.createClass
     if @state.noOrganization
       data.affiliation = "N/A"
     else
-      data.affiliation = (@getGroup @state.gid).name
+      group = @getGroup @state.gid
+
+      if not group?
+        Api.notify {status: "error", message: "Please select an organization or check that you are not with one!"}
+        return
+
+      data.affiliation = group.name
 
     Api.call "POST", "/api/user/create_simple", @state
     .done (resp) =>
