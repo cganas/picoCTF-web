@@ -1,28 +1,26 @@
 React = require 'react'
 
 History = (require "react-router").History
-
-RB = require 'react-bootstrap'
-
 Api = require '../utils/api'
 
 UserLogoutPage = React.createClass
   mixins: [History]
 
   getInitialState: ->
+    failure: undefined
+
+  componentWillMount: ->
     Api.call "GET", "/api/user/logout"
     .done (resp) =>
       Api.notify resp
-      if resp.status == "success"
-        @props.onStatusChange()
-        @history.push "/"
-        success : true
-      else
-        success : false
+      @props.onStatusChange () =>
+        @setState {failure: resp.status == "error"}
+        if resp.status == "success"
+          @history.push "/login"
 
   render: ->
-    if @state.success
-      <p>Logout successful. Redirecting..</p>
+    if @state.failure?
+      <p>Logging out.</p>
     else
       <p>Logout unsuccessful. Please try again.</p>
 
