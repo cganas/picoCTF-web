@@ -38,11 +38,14 @@ AdminManagementPage = require "./views/admin_management_page"
 
 UserScoreboardPage = require "./views/user_scoreboard_page"
 
+UserPasswordResetPage = require "./views/user_password_reset_page"
+
 ReactDom.render (
   <Router history={createBrowserHistory()}>
     <Route path="/" component={App}>
       <Route path="login" component={UserLoginPage}/>
       <Route path="logout" component={UserLogoutPage}/>
+      <Route path="reset" component={UserPasswordResetPage}/>
 
       <Route path="register" component={UserRegistrationPage}/>
       <Route path="register/:rid/:gid" component={UserRegistrationPage}/>
