@@ -4,22 +4,24 @@ update = require 'react-addons-update'
 Noty = require 'noty'
 
 Api = require './utils/api'
+Status = require "./utils/status"
 
 CompetitionNavbar = require "./components/competition_navbar"
 
 App = React.createClass
 
   getInitialState: ->
-    status: {}
+    status: Status.getStatus()
+
+  updateStatus: (status) ->
+    @setState status: status
 
   onStatusChange: ->
-    Api.call "GET", "/api/user/status"
-    .success (resp) =>
-      @setState update @state,
-        status: $set: resp.data
+    Status.fetch()
 
   componentWillMount: ->
-    @onStatusChange()
+    Status.onChange = @updateStatus
+    Status.fetch()
 
   render: ->
     childrenWithProps = React.Children.map @props.children, (child) =>
