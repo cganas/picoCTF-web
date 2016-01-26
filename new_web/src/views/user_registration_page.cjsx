@@ -25,7 +25,7 @@ _ = require 'underscore'
 Api = require '../utils/api'
 
 UserRegistrationPage = React.createClass
-  mixins: [LinkedStateMixin, History]
+  mixins: [History, LinkedStateMixin]
 
   getInitialState: ->
     state =
@@ -117,8 +117,6 @@ UserRegistrationPage = React.createClass
         Organization <span className="pull-right no-org"><Input type="checkbox" label="I am not with an organization."
           checked={@state.noOrganization} onChange={() => @setState update @state, $set: noOrganization: !@state.noOrganization}/></span>
       </label>
-
-    console.log @state
 
     <Grid>
       <Panel>
