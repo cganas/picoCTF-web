@@ -38,6 +38,9 @@ AdminManagementPage = require "./views/admin_management_page"
 
 UserScoreboardPage = require "./views/user_scoreboard_page"
 
+Status = require "./utils/status"
+Security = require "./utils/security"
+
 ReactDom.render (
   <Router history={createBrowserHistory()}>
     <Route path="/" component={App}>
@@ -47,34 +50,34 @@ ReactDom.render (
       <Route path="register" component={UserRegistrationPage}/>
       <Route path="register/:rid/:gid" component={UserRegistrationPage}/>
 
-      <Route path="problems" component={ProblemPage}>
+      <Route path="problems" component={ProblemPage} onEnter={Security.MustBeLoggedIn()}>
         <IndexRoute component={ProblemViewers.DefaultProblemViewer}/>
         <Route path="category/:category" component={ProblemViewers.CategoryViewer}/>
         <Route path=":pid" component={ProblemViewers.ProblemViewer}/>
       </Route>
 
-      <Route path="shell" component={ShellPage}>
+      <Route path="shell" component={ShellPage} onEnter={Security.MustBeLoggedIn()}>
         <IndexRoute component={ShellViewers.DefaultShellViewer}/>
         <Route path=":sid" component={ShellViewers.ShellViewer}/>
       </Route>
       <Route path="account" component={AccountPage}/>
 
-      <Redirect from="/management" to="/management/problems"/>
-      <Route path="management">
+      <Redirect from="/management" to="/management/problems">
+      <Route path="management" onEnter={Security.MustBeAnAdmin()}>
         <Route path=":tab" component={AdminManagementPage}/>
       </Route>
 
       <Redirect from="/scoreboard" to="/scoreboard/Public"/>
-      <Route path="scoreboard">
+      <Route path="scoreboard" onEnter={Security.MustBeLoggedIn()}>
         <Route path=":group" component={UserScoreboardPage}/>
       </Route>
 
-      <Route path="organization" component={OrganizationManagementPage}>
+      <Route path="organization" component={OrganizationManagementPage} onEnter={Security.MustBeATeacher()}>
         <IndexRoute component={ManageOrganizationOverview}/>
         <Route path=":organization" component={ManageOrganization}/>
       </Route>
 
-      <IndexRoute component={FrontPage}/>
+      <IndexRoute component={FrontPage} onEnter={Security.MustBeLoggedIn()}/>
     </Route>
   </Router>
 ), document.getElementById 'app'
