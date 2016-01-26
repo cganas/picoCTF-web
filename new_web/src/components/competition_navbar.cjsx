@@ -18,7 +18,7 @@ _ = require "underscore"
 ReactHelper = require "../utils/react_helper"
 
 inactiveCompetitionBlacklist = ["Problems"]
-anonymousBlacklist = ["Shell", "Problems", "Logout"]
+anonymousBlacklist = ["Shell", "Scoreboard", "Problems", "Logout"]
 loggedInBlacklist = ["Login", "Register"]
 
 accessMapping =
