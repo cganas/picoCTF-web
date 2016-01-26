@@ -30,8 +30,8 @@ UserLoginPage = React.createClass
     .done (resp) =>
       Api.notify resp
       if resp.status == "success"
-        @props.onStatusChange()
-        @history.push "/"
+        @props.onStatusChange () =>
+          @history.push "/"
 
   render: ->
     userGlyph = <Glyphicon glyph="user"/>

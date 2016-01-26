@@ -65,12 +65,12 @@ UserRegistrationPage = React.createClass
     .done (resp) =>
       Api.notify resp
       if resp.status == "success"
-        @props.onStatusChange()
-        if @props.status.email_verification
-          Api.notify {status: "success", message: "You have received a verification email. Check your email to confirm your account."}
-          @history.push "/login"
-        else
-          @history.push "/problems"
+        @props.onStatusChange () =>
+          if @props.status.email_verification
+            Api.notify {status: "success", message: "You have received a verification email. Check your email to confirm your account."}
+            @history.push "/login"
+          else
+            @history.push "/problems"
 
   onOrganizationSelect: (affiliation) ->
     organization = _.find @state.allGroups, (group) => group.name == affiliation

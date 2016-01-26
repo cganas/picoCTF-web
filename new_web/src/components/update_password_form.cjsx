@@ -39,8 +39,8 @@ UpdatePasswordForm = React.createClass
     .done (resp) =>
       Api.notify resp
       if resp.status == "success"
-        @props.onStatusChange()
-        @history.push "/profile"
+        @props.onStatusChange () =>
+          @history.push "/profile"
 
   makeHeader: ->
     <div>

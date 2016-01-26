@@ -32,8 +32,8 @@ DisableAccountForm = React.createClass
       .done (resp) =>
         Api.notify resp
         if resp.status == "success"
-          @props.onStatusChange()
-          @history.push "/"
+          @props.onStatusChange () =>
+            @history.push "/"
     ), "Disable Account", "Cancel", "top", "danger"
 
   makeHeader: ->

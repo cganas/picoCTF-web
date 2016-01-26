@@ -1,5 +1,7 @@
 React = require 'react'
 
+History = (require "react-router").History
+
 FrontPage = React.createClass
   render: ->
     <div>

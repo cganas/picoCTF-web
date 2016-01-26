@@ -16,8 +16,8 @@ App = React.createClass
   updateStatus: (status) ->
     @setState status: status
 
-  onStatusChange: ->
-    Status.fetch()
+  onStatusChange: (callback) ->
+    Status.fetch callback
 
   componentWillMount: ->
     Status.onChange = @updateStatus
