@@ -48,9 +48,11 @@ ViewerToolbar = React.createClass
               Problems
             </BreadcrumbItem>
 
-            <BreadcrumbItem onClick={() => @history.push "/problems/category/#{firstProblem.category}"}>
-              {firstProblem.category}
-            </BreadcrumbItem>
+            <ShowIf truthy={_.all _.tail(@props.filteredProblems), (p) -> p.category == firstProblem.category}>
+              <BreadcrumbItem onClick={() => @history.push "/problems/category/#{firstProblem.category}"}>
+                {firstProblem.category}
+              </BreadcrumbItem>
+            </ShowIf>
 
             <ShowIf truthy={@props.filteredProblems.length == 1}>
               <BreadcrumbItem active>
