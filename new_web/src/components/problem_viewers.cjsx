@@ -37,12 +37,10 @@ ViewerToolbar = React.createClass
     handlePageSelect: React.PropTypes.func.isRequired
 
   render: ->
-
     if @props.filteredProblems.length > 0
       firstProblem = _.first @props.filteredProblems
-
       <Row>
-        <Col xs={5} style={marginLeft: "-15px"}>
+        <Col xs={3} style={marginLeft: "-15px"}>
           <Breadcrumb className="pull-left">
             <BreadcrumbItem onClick={() => @history.push "/problems"}>
               Problems
@@ -59,8 +57,9 @@ ViewerToolbar = React.createClass
                 {firstProblem.name}
               </BreadcrumbItem>
             </ShowIf/>
-
           </Breadcrumb>
+        </Col>
+        <Col xs={2}>
         </Col>
         <Col xsOffset={2} xs={5}>
           <ShowIf truthy={@props.problemPages > 1}>
@@ -95,11 +94,11 @@ Viewer = React.createClass
   render: ->
     filteredProblems = @props.showFilter @props.problems
 
-    problemPages = parseInt (filteredProblems.length / @problemsPerPage) + 1
+    problemPages = Math.max(parseInt((filteredProblems.length - 1) / @problemsPerPage), 0) + 1
 
     activeIndex = @state.activePage - 1
     startOfPage = activeIndex * @problemsPerPage
-    shownProblems = filteredProblems.slice startOfPage, startOfPage + @problemsPerPage
+    shownProblems = filteredProblems[startOfPage...startOfPage + @problemsPerPage]
 
     <div>
       <ViewerToolbar
