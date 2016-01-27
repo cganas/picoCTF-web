@@ -18,23 +18,38 @@ Pagination = RB.Pagination
 Breadcrumb = RB.Breadcrumb
 BreadcrumbItem = RB.BreadcrumbItem
 
+Select = require "react-select"
+
 update = require 'react-addons-update'
 
 _ = require 'underscore'
 
 Problem = require './problem'
 
+LinkedStateMixin = require 'react-addons-linked-state-mixin'
+
 ReactHelper = require "../utils/react_helper"
 ShowIf = ReactHelper.ShowIf
+SessionStore = ReactHelper.SessionStore
+SessionSet = ReactHelper.SessionSet
 
 ViewerToolbar = React.createClass
-  mixins: [History]
+  mixins: [History, LinkedStateMixin]
 
   propTypes:
     filteredProblems: React.PropTypes.array.isRequired
     problemPages: React.PropTypes.number.isRequired
+    problemsPerPage: React.PropTypes.number.isRequired
     activePage: React.PropTypes.number.isRequired
     handlePageSelect: React.PropTypes.func.isRequired
+    updateProblemsPerPage: React.PropTypes.func.isRequired
+    updateProblemDisplayOptions: React.PropTypes.func.isRequired
+
+  problemsPerPageOptions: _.map [4, 8, 16, 32], (n) -> {label: "#{n} problems per page", value: n}
+  problemDisplayOptions: [
+    {label: "Show solved", value: true, stringValue: "on"}
+    {label: "Hide solved", value: false, stringValue: "off"}
+  ]
 
   render: ->
     if @props.filteredProblems.length > 0
@@ -59,9 +74,30 @@ ViewerToolbar = React.createClass
             </ShowIf/>
           </Breadcrumb>
         </Col>
-        <Col xs={2}>
+        <Col xs={4}>
+          <ShowIf truthy={@props.filteredProblems.length > 1}>
+            <div>
+              <Col xs={6}>
+                <Select
+                  options={@problemDisplayOptions}
+                  value={if @props.showSolvedProblems then "on" else "off"}
+                  valueKey="stringValue"
+                  onChange={@props.updateProblemDisplayOptions}
+                  clearable={false}
+                  searchable={false}/>
+              </Col>
+              <Col xs={6}>
+                <Select
+                  options={@problemsPerPageOptions}
+                  value={@props.problemsPerPage}
+                  onChange={@props.updateProblemsPerPage}
+                  clearable={false}
+                  searchable={false}/>
+              </Col>
+            </div>
+          </ShowIf>
         </Col>
-        <Col xsOffset={2} xs={5}>
+        <Col xs={5}>
           <ShowIf truthy={@props.problemPages > 1}>
             <Pagination first next prev last ellipsis
               id="problem-pagination"
@@ -78,33 +114,47 @@ ViewerToolbar = React.createClass
 
 Viewer = React.createClass
 
-  problemsPerPage: 4
-
   propTypes:
     problems: React.PropTypes.array.isRequired
     showFilter: React.PropTypes.func.isRequired
 
   getInitialState: ->
     activePage: 1
+    problemsPerPage: SessionStore "problemsPerPage", 8
+    showSolvedProblems: SessionStore "showSolvedProblems", false
 
   handlePageSelect: (e, selectedEvent) ->
-    @setState
-      activePage: selectedEvent.eventKey
+    @setState update @state, $set: activePage: selectedEvent.eventKey
+
+  updateProblemDisplayOptions: (option) ->
+    @setState update @state, $set: showSolvedProblems: (SessionSet "showSolvedProblems", option.value)
+
+  updateProblemsPerPage: (option) ->
+    @setState update @state, $set: problemsPerPage: (SessionSet "problemsPerPage", option.value)
 
   render: ->
     filteredProblems = @props.showFilter @props.problems
 
-    problemPages = Math.max(parseInt((filteredProblems.length - 1) / @problemsPerPage), 0) + 1
+    if not @state.showSolvedProblems and filteredProblems.length > 1
+      displayFilteredProblems = _.filter filteredProblems, (p) -> !p.solved
+    else
+      displayFilteredProblems = filteredProblems
+
+    problemPages = Math.max(parseInt((displayFilteredProblems.length - 1) / @state.problemsPerPage), 0) + 1
 
     activeIndex = @state.activePage - 1
-    startOfPage = activeIndex * @problemsPerPage
-    shownProblems = filteredProblems[startOfPage...startOfPage + @problemsPerPage]
+    startOfPage = activeIndex * @state.problemsPerPage
+    shownProblems = displayFilteredProblems[startOfPage ... startOfPage + @state.problemsPerPage]
 
     <div>
       <ViewerToolbar
         handlePageSelect={@handlePageSelect}
         activePage={@state.activePage}
         filteredProblems={filteredProblems}
+        updateProblemsPerPage={@updateProblemsPerPage}
+        showSolvedProblems={@state.showSolvedProblems}
+        updateProblemDisplayOptions={@updateProblemDisplayOptions}
+        problemsPerPage={@state.problemsPerPage}
         problemPages={problemPages}
         {...@props}/>
 

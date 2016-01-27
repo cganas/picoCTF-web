@@ -21,16 +21,22 @@ Badge = RB.Badge
 
 HintStore = require "../components/hint_store"
 
+History = (require "react-router").History
+
 Api = require "../utils/api"
 
 update = require 'react-addons-update'
 
 _ = require 'underscore'
 
-ShowIf = (require "../utils/react_helper").ShowIf
+ReactHelper = require "../utils/react_helper"
+ShowIf = ReactHelper.ShowIf
+SessionStore = ReactHelper.SessionStore
+SessionSet = ReactHelper.SessionSet
+SessionGet = ReactHelper.SessionGet
 
 Problem = React.createClass
-  mixins: [LinkedStateMixin]
+  mixins: [LinkedStateMixin, History]
 
   propTypes: ->
     name: React.PropTypes.string.isRequired
@@ -38,26 +44,12 @@ Problem = React.createClass
     score: React.PropTypes.number.isRequired
     author: React.PropTypes.string.isRequired
 
+  sessionKey: (key) ->
+    if key then "#{@props.pid}.#{key}" else @props.pid
+
   getInitialState: ->
     key: ""
-
-  makeHeader: ->
-    <div>
-      <Link to={"/problems/#{@props.pid}"}>
-        <strong>{@props.name}</strong> {@props.score}
-      </Link>
-      <span className="pull-right">
-        <Link to={"/problems/category/#{@props.category}"}>
-          <Badge>{@props.category}</Badge>
-        </Link>
-      </span>
-    </div>
-
-  makeFooter: ->
-    <div>
-      <span>Written by {@props.author} at {@props.organization}</span>
-      <span className="pull-right"><strong>Solves: {@props.solves}</strong></span>
-    </div>
+    expanded: SessionStore @sessionKey("expanded"), false
 
   onProblemSubmit: (e) ->
     e.preventDefault()
@@ -69,24 +61,61 @@ Problem = React.createClass
 
   render: ->
     problemClass = classNames(
-      "panel-info": !@props.solved
-      "panel-success": @props.solved
+      "panel-default": !@props.solved
+      "panel-success": @props.solved,
+      "panel": true
     )
 
-    <Panel className={problemClass} header={@makeHeader()} footer={@makeFooter()}>
-      <div style={paddingBottom: 20} dangerouslySetInnerHTML={__html: @props.description}/>
-      <HintStore hints={@props.hints}/>
-      <hr/>
-      <ShowIf truthy={@props.solved}>
-        <Input type="text" bsStyle="success" hasFeedback disabled/>
-      </ShowIf>
-      <ShowIf truthy={!@props.solved}>
-        <form onSubmit={@onProblemSubmit}>
-          <Input type="text"
-            buttonBefore={<Button type="submit">Submit</Button>}
-            valueLink={@linkState "key"}/>
-        </form>
-      </ShowIf>
-    </Panel>
+    problemBodyClass = classNames(
+      "panel-collapse": true,
+      "collapse": true,
+      "in": @state.expanded
+    )
+
+    to = (link, f) =>
+      (e) =>
+        if f?
+          f()
+        @history.push link
+        e.stopPropagation()
+
+    toggleExpand = (expanded) =>
+      () =>
+        SessionSet (@sessionKey "expanded"), (expanded || (!SessionGet (@sessionKey "expanded")))
+        @setState update @state, $set: expanded: SessionGet (@sessionKey "expanded")
+
+    <div className="panel-group">
+      <div className={problemClass}>
+        <div className="panel-heading" onClick={toggleExpand()}>
+          <a onClick={to "/problems/#{@props.pid}", toggleExpand true}>
+            <strong>{@props.name}</strong> {@props.score}
+          </a>
+          <a className="pull-right" onClick={to "/problems/category/#{@props.category}"}>
+            {@props.category}
+          </a>
+        </div>
+        <div className={problemBodyClass}>
+          <div className="panel-body">
+          <div style={paddingBottom: 20} dangerouslySetInnerHTML={__html: @props.description}/>
+          <HintStore hints={@props.hints}/>
+          <hr/>
+          <ShowIf truthy={@props.solved}>
+            <Input type="text" bsStyle="success" hasFeedback disabled/>
+          </ShowIf>
+          <ShowIf truthy={!@props.solved}>
+            <form onSubmit={@onProblemSubmit}>
+              <Input type="text"
+                buttonBefore={<Button type="submit">Submit</Button>}
+                valueLink={@linkState "key"}/>
+            </form>
+          </ShowIf>
+          </div>
+          <div className="panel-footer">
+            <span>Written by {@props.author} at {@props.organization}</span>
+            <span className="pull-right"><strong>Solves: {@props.solves}</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
 
 module.exports = Problem
