@@ -45,7 +45,7 @@ ViewerToolbar = React.createClass
     updateProblemsPerPage: React.PropTypes.func.isRequired
     updateProblemDisplayOptions: React.PropTypes.func.isRequired
 
-  problemsPerPageOptions: _.map [4, 8, 16, 32], (n) -> {label: "#{n} problems per page", value: n}
+  problemsPerPageOptions: _.map [4, 8, 16, 32], (n) -> {label: "#{n} per page", value: n}
   problemDisplayOptions: [
     {label: "Show solved", value: true, stringValue: "on"}
     {label: "Hide solved", value: false, stringValue: "off"}
@@ -55,54 +55,50 @@ ViewerToolbar = React.createClass
     if @props.filteredProblems.length > 0
       firstProblem = _.first @props.filteredProblems
       <Row>
-        <Col xs={3} style={marginLeft: "-15px"}>
-          <Breadcrumb className="pull-left">
-            <BreadcrumbItem onClick={() => @history.push "/problems"}>
-              Problems
-            </BreadcrumbItem>
-
-            <ShowIf truthy={_.all _.tail(@props.filteredProblems), (p) -> p.category == firstProblem.category}>
-              <BreadcrumbItem onClick={() => @history.push "/problems/category/#{firstProblem.category}"}>
-                {firstProblem.category}
+        <Col xs={8} style={marginLeft: "-15px"}>
+          <span>
+            <Breadcrumb className="pull-left">
+              <BreadcrumbItem onClick={() => @history.push "/problems"}>
+                Problems
               </BreadcrumbItem>
-            </ShowIf>
 
-            <ShowIf truthy={@props.filteredProblems.length == 1}>
-              <BreadcrumbItem active>
-                {firstProblem.name}
-              </BreadcrumbItem>
-            </ShowIf/>
-          </Breadcrumb>
-        </Col>
-        <Col xs={4}>
+              <ShowIf truthy={_.all _.tail(@props.filteredProblems), (p) -> p.category == firstProblem.category}>
+                <BreadcrumbItem onClick={() => @history.push "/problems/category/#{firstProblem.category}"}>
+                  {firstProblem.category}
+                </BreadcrumbItem>
+              </ShowIf>
+
+              <ShowIf truthy={@props.filteredProblems.length == 1}>
+                <BreadcrumbItem active>
+                  {firstProblem.name}
+                </BreadcrumbItem>
+              </ShowIf/>
+            </Breadcrumb>
+          </span>
           <ShowIf truthy={@props.filteredProblems.length > 1}>
-            <div>
-              <Col xs={6}>
-                <Select
-                  options={@problemDisplayOptions}
-                  value={if @props.showSolvedProblems then "on" else "off"}
-                  valueKey="stringValue"
-                  onChange={@props.updateProblemDisplayOptions}
-                  clearable={false}
-                  searchable={false}/>
-              </Col>
-              <Col xs={6}>
-                <Select
-                  options={@problemsPerPageOptions}
-                  value={@props.problemsPerPage}
-                  onChange={@props.updateProblemsPerPage}
-                  clearable={false}
-                  searchable={false}/>
-              </Col>
+            <div className="pull-right">
+              <Select
+                options={@problemDisplayOptions}
+                value={if @props.showSolvedProblems then "on" else "off"}
+                valueKey="stringValue"
+                onChange={@props.updateProblemDisplayOptions}
+                clearable={false}
+                searchable={false}/>
+              <Select
+                options={@problemsPerPageOptions}
+                value={@props.problemsPerPage}
+                onChange={@props.updateProblemsPerPage}
+                clearable={false}
+                searchable={false}/>
             </div>
           </ShowIf>
         </Col>
-        <Col xs={5}>
+        <Col xs={4}>
           <ShowIf truthy={@props.problemPages > 1}>
-            <Pagination first next prev last ellipsis
+            <Pagination next prev last
               id="problem-pagination"
               className="pull-right"
-              maxButtons={5}
+              maxButtons={3}
               items={@props.problemPages}
               activePage={@props.activePage}
               onSelect={@props.handlePageSelect}/>
