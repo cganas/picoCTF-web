@@ -78,6 +78,7 @@ ViewerToolbar = React.createClass
           <ShowIf truthy={@props.filteredProblems.length > 1}>
             <div className="pull-right">
               <Select
+                className="problem-page"
                 options={@problemDisplayOptions}
                 value={if @props.showSolvedProblems then "on" else "off"}
                 valueKey="stringValue"
@@ -85,6 +86,7 @@ ViewerToolbar = React.createClass
                 clearable={false}
                 searchable={false}/>
               <Select
+                className="problem-page"
                 options={@problemsPerPageOptions}
                 value={@props.problemsPerPage}
                 onChange={@props.updateProblemsPerPage}
