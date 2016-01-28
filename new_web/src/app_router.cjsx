@@ -48,7 +48,10 @@ Security = require "./utils/security"
 ReactDom.render (
   <Router history={createBrowserHistory()}>
     <Route path="/" component={App}>
+
       <Route path="login" component={UserLoginPage}/>
+      <Route path="login/verificationResult/:verificationStatus" component={UserLoginPage}/>
+
       <Route path="logout" component={UserLogoutPage}/>
       <Route path="reset" component={UserPasswordResetPage}/>
 

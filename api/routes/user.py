@@ -83,14 +83,13 @@ def verify_user_hook():
     uid = request.args.get("uid")
     token = request.args.get("token")
 
-    # Needs to be more telling of success
     if api.common.safe_fail(api.user.verify_user, uid, token):
         if api.config.get_settings()["max_team_size"] > 1:
-            return redirect("/#team-builder")
+            return redirect("/login/verificationResult/success")
         else:
-            return redirect("/#status=verified")
+            return redirect("/login/verificationResult/success")
     else:
-        return redirect("/")
+        return redirect("/login/verificationResult/error")
 
 @blueprint.route('/login', methods=['POST'])
 @api_wrapper

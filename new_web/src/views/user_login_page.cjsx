@@ -33,6 +33,14 @@ UserLoginPage = React.createClass
         @props.onStatusChange () =>
           @history.push "/"
 
+  componentDidMount: ->
+    if @props.params.verificationStatus?
+      message = "Your account has been successfully verified! Please login."
+      if @props.params.verificationStatus == "error"
+        message = "We have failed to verify your account! Double check your verification link."
+
+      Api.notify {status: @props.params.verificationStatus, message: message}
+
   render: ->
     userGlyph = <Glyphicon glyph="user"/>
     lockGlyph = <Glyphicon glyph="lock"/>
