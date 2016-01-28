@@ -54,6 +54,7 @@ ReactDom.render (
 
       <Route path="logout" component={UserLogoutPage}/>
       <Route path="reset" component={UserPasswordResetPage}/>
+      <Route path="reset/:token" component={UserPasswordResetPage}/>
 
       <Route path="register" component={UserRegistrationPage}/>
       <Route path="register/:rid/:gid" component={UserRegistrationPage}/>

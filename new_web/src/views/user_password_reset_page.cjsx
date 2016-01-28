@@ -32,23 +32,57 @@ UserPasswordResetPage = React.createClass
       if resp.status == "success"
         @history.push "/login"
 
+  onPasswordResetConfirmation: (e) ->
+    e.preventDefault()
+
+    data =
+      "new-password": @state.newPassword
+      "new-password-confirmation": @state.newPasswordConfirmation
+      "reset-token": @props.params.token
+
+    Api.call "POST", "/api/user/confirm_password_reset", data
+    .done (resp) =>
+      Api.notify resp
+      if resp.status == "success"
+        @history.push "/login"
+
   render: ->
     userGlyph = <Glyphicon glyph="user"/>
-    <Grid>
-      <Panel>
-        <form onSubmit={@onPasswordReset}>
-          <p><i>A password reset link will be sent the users email.</i></p>
-          <Input type="text" valueLink={@linkState "username"} addonBefore={userGlyph} placeholder="Username" required="visible"/>
-          <Row>
-            <Col md={6}>
-              <Button type="submit">Reset Password</Button>
-            </Col>
-            <Col md={6}>
-              <span className="pull-right pad">Go back to <a onClick={() => @history.push "/login"}>Login</a>.</span>
-            </Col>
-          </Row>
-        </form>
-      </Panel>
-    </Grid>
+    lockGlyph = <Glyphicon glyph="lock"/>
+
+    if not @props.params.token?
+      <Grid>
+        <Panel>
+          <form onSubmit={@onPasswordReset}>
+            <p><i>A password reset link will be sent the users email.</i></p>
+            <Input type="text" valueLink={@linkState "username"} addonBefore={userGlyph} placeholder="Username" required="visible"/>
+            <Row>
+              <Col md={6}>
+                <Button type="submit">Reset Password</Button>
+              </Col>
+              <Col md={6}>
+                <span className="pull-right pad">Go back to <a onClick={() => @history.push "/login"}>Login</a>.</span>
+              </Col>
+            </Row>
+          </form>
+        </Panel>
+      </Grid>
+    else
+      <Grid>
+        <Panel>
+          <form onSubmit={@onPasswordResetConfirmation}>
+            <Input type="password" valueLink={@linkState "newPassword"} addonBefore={lockGlyph} placeholder="Password" required="visible"/>
+            <Input type="password" valueLink={@linkState "newPasswordConfirmation"} addonBefore={lockGlyph} placeholder="Confirm Password" required="visible"/>
+            <Row>
+              <Col md={6}>
+                <Button type="submit">Update Password</Button>
+              </Col>
+              <Col md={6}>
+                <span className="pull-right pad">Go back to <a onClick={() => @history.push "/login"}>Login</a>.</span>
+              </Col>
+            </Row>
+          </form>
+        </Panel>
+      </Grid>
 
 module.exports = UserPasswordResetPage
