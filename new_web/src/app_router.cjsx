@@ -40,6 +40,8 @@ UserPasswordResetPage = require "./views/user_password_reset_page"
 
 UserScoreboardPage = require "./views/user_scoreboard_page"
 
+NoRoutePage = require "./views/no_route_page"
+
 Status = require "./utils/status"
 Security = require "./utils/security"
 
@@ -81,6 +83,8 @@ ReactDom.render (
       </Route>
 
       <IndexRoute component={FrontPage} onEnter={Security.MustBeLoggedIn()}/>
+
+      <Route path="*" component={NoRoutePage}/>
     </Route>
   </Router>
 ), document.getElementById 'app'
