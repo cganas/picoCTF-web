@@ -87,12 +87,7 @@ CompetitionNavbar = React.createClass
           <Nav pullRight>
             <li>
               <Link to="/account">
-                <Glyphicon glyph="user"/> {@props.status.username}
-              </Link>
-            </li>
-            <li>
-              <Link to="/">
-                <Glyphicon glyph="flash"/> {@props.status.score}
+                <Glyphicon glyph="user"/> {@props.status.username} [{@props.status.score}]
               </Link>
             </li>
             <li>
