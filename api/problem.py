@@ -738,9 +738,13 @@ def get_unlocked_pids(tid, category=None):
     solved = get_solved_problems(tid=tid, category=category)
     team = api.team.get_team(tid=tid)
 
+
+    uids = api.team.get_team_uids(tid=team["tid"])
+    adminRequest = any([api.user.is_admin(uid) for uid in uids])
+
     unlocked = []
     for problem in get_all_problems():
-        if is_problem_unlocked(problem, solved):
+        if is_problem_unlocked(problem, solved) or adminRequest:
             unlocked.append(problem["pid"])
 
     for pid in unlocked:
@@ -808,13 +812,14 @@ def get_visible_problems(tid, category=None):
     unlocked_pids = get_unlocked_pids(tid, category=category)
     solved_pids = get_solved_pids(tid=tid)
 
-    result = []
+    uids = api.team.get_team_uids(tid=tid)
+    adminRequest = any([api.user.is_admin(uid) for uid in uids])
 
     result = []
     #locked = []
 
     for problem  in all_problems:
-        if problem["pid"] in unlocked_pids:
+        if problem["pid"] in unlocked_pids or adminRequest:
             result.append(unlocked_filter(get_problem_instance(problem["pid"], tid), problem["pid"] in solved_pids))
 
         # Disable locked problem display.
