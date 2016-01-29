@@ -56,6 +56,11 @@ Problem = React.createClass
     Api.call "POST", "/api/problems/submit", {pid: @props.pid, key: @state.key}
     .done (resp) =>
       Api.notify resp
+
+      if resp.status == "success"
+        SessionSet (@sessionKey "expanded"), false
+        @setState update @state, $set: expanded: false
+
       @setState update @state, key: $set: ""
       @props.onProblemChange @props.pid
 
