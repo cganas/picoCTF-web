@@ -61,7 +61,10 @@ UserRegistrationPage = React.createClass
 
       data.affiliation = group.name
 
-    Api.call "POST", "/api/user/create_simple", @state
+    if @state.rid
+      data.email = "auto@fill.com"
+
+    Api.call "POST", "/api/user/create_simple", data
     .done (resp) =>
       Api.notify resp
       if resp.status == "success"
