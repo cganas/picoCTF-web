@@ -128,7 +128,10 @@ Viewer = React.createClass
     @setState update @state, $set: showSolvedProblems: (SessionSet "showSolvedProblems", option.value)
 
   updateProblemsPerPage: (option) ->
-    @setState update @state, $set: problemsPerPage: (SessionSet "problemsPerPage", option.value)
+    @setState update @state, $set: {
+      activePage: Math.max Math.floor(@state.problemsPerPage / option.value * (@state.activePage-1)), 1
+      problemsPerPage: (SessionSet "problemsPerPage", option.value)
+    }
 
   render: ->
     filteredProblems = @props.showFilter @props.problems
