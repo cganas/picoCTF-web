@@ -17,7 +17,7 @@ _ = require "underscore"
 
 ReactHelper = require "../utils/react_helper"
 
-inactiveCompetitionBlacklist = ["Problems"]
+inactiveCompetitionBlacklist = ["Problems", "Scoreboard", "Shell"]
 anonymousBlacklist = ["Shell", "Scoreboard", "Problems", "Logout"]
 loggedInBlacklist = ["Login", "Register"]
 
