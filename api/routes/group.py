@@ -210,6 +210,16 @@ def create_group_hook():
     gid = api.group.create_group(team["tid"], params["group-name"])
     return WebSuccess("Successfully created group.", data=gid)
 
+@blueprint.route('/problems/stats', methods=['GET'])
+@api_wrapper
+@require_teacher
+def get_problem_data_hook():
+    has_instances = lambda p : len(p["instances"]) > 0
+    problems = list(filter(has_instances, api.problem.get_all_problems(show_disabled=False)))
+    problems = [{"name": p["name"], "score": p["score"]} for p in problems]
+
+    return WebSuccess(data={"problems": problems})
+
 @blueprint.route('/join', methods=['POST'])
 @api_wrapper
 @check_csrf

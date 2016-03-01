@@ -31,6 +31,8 @@ Tab = RB.Tab
 
 ShowIf = (require "../utils/react_helper").ShowIf
 
+ExportOrganizationStatistics = require "./export_organization_statistics"
+
 ManageOrganization = React.createClass
   getInitialState: ->
     members: []
@@ -242,9 +244,19 @@ ManageOrganization = React.createClass
           {if currentTeam then @createInformationView(sortedTeams, currentTeam) else "Not"}
         </Col>
       </Tab>
-      <Tab eventKey={2} title="Group Management">
-        <GroupOptions pushUpdates={@pushUpdates} settings={@state.settings} gid={@props.gid}/>
-        <GroupEmailWhitelist emails={@state.settings.email_filter} pushUpdates={@pushUpdates} gid={@props.gid}/>
+      <Tab style={paddingTop: 10} eventKey={2} title="Group Management">
+        <Col xs={6}>
+          <GroupOptions pushUpdates={@pushUpdates} settings={@state.settings} gid={@props.gid}/>
+          <GroupEmailWhitelist emails={@state.settings.email_filter} pushUpdates={@pushUpdates} gid={@props.gid}/>
+        </Col>
+      </Tab>
+      <Tab style={paddingTop: 10} eventKey={3} title="Organization Statistics">
+        <Col xs={6}>
+          <ExportOrganizationStatistics
+            gid={@props.gid}
+            members={@state.members}
+            teachers={@state.teachers}/>
+        </Col>
       </Tab>
     </Tabs>
 
